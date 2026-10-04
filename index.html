@@ -3,30 +3,18 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-
-<!-- ============ PWA / iPhone / Android ============ -->
 <title>Nitpad Pro</title>
-<meta name="description" content="Nitpad Pro — умный блокнот с темами, Focus Studio и экспортом в Word">
+<meta name="description" content="Nitpad Pro — умный блокнот">
 <meta name="theme-color" content="#2563eb">
-
-<!-- iOS -->
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Nitpad">
 <link rel="apple-touch-icon" href="./icon.png">
-<link rel="apple-touch-icon" sizes="120x120" href="./icon.png">
-<link rel="apple-touch-icon" sizes="152x152" href="./icon.png">
-<link rel="apple-touch-icon" sizes="167x167" href="./icon.png">
 <link rel="apple-touch-icon" sizes="180x180" href="./icon.png">
-
-<!-- Android / общий PWA -->
-<link rel="icon" type="image/png" sizes="32x32" href="./icon.png">
 <link rel="icon" type="image/png" sizes="192x192" href="./icon.png">
 <link rel="icon" type="image/png" sizes="512x512" href="./icon.png">
 <link rel="manifest" href="./manifest.json">
-<!-- ================================================== -->
-
 <style>
 :root,[data-theme="light"]{--bg:#eef1f5;--panel:#fff;--text:#1a1d21;--muted:#6b7280;--border:#e0e4ea;--accent:#4f46e5;--accent-soft:#eef2ff;--editor-bg:#fff;--code-bg:#f2f4f8;--shadow:0 2px 10px rgba(20,25,40,.07)}
 [data-theme="dark"]{--bg:#111317;--panel:#1a1d22;--text:#e7e9ee;--muted:#98a0ad;--border:#2a2f38;--accent:#8b8bff;--accent-soft:#232838;--editor-bg:#1a1d22;--code-bg:#22262e;--shadow:0 2px 14px rgba(0,0,0,.4)}
@@ -38,7 +26,7 @@
 [data-theme="rose"]{--bg:#fce7ec;--panel:#fff5f7;--text:#4a2730;--muted:#a17a84;--border:#f2ccd4;--accent:#c2185b;--accent-soft:#fbd8e0;--editor-bg:#fff5f7;--code-bg:#f8dfe5}
 [data-theme="monokai"]{--bg:#1e1f1c;--panel:#272822;--text:#f8f8f2;--muted:#a6a28c;--border:#3b3d35;--accent:#a6e22e;--accent-soft:#33352c;--editor-bg:#272822;--code-bg:#2f312a}
 *{box-sizing:border-box}
-html,body{height:100%;margin:0}
+html,body{height:100%;margin:0;overscroll-behavior-y:contain}
 body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;background:var(--bg);color:var(--text);overflow:hidden;font-size:14px;transition:background .25s,color .25s;-webkit-tap-highlight-color:transparent;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
 [hidden]{display:none!important}
 button,input,select{font-family:inherit;color:inherit}
@@ -53,7 +41,7 @@ button,input,select{font-family:inherit;color:inherit}
 .tools{display:flex;align-items:center;gap:4px}
 .group{display:flex;align-items:center;gap:2px;padding:0 6px;border-right:1px solid var(--border);flex-shrink:0}
 .group:last-child{border-right:none}
-.tb{height:32px;min-width:32px;padding:0 8px;border:1px solid transparent;background:transparent;color:var(--text);border-radius:8px;cursor:pointer;font-size:14px;line-height:1;display:inline-flex;align-items:center;justify-content:center;gap:5px;white-space:nowrap}
+.tb{height:32px;min-width:32px;padding:0 8px;border:1px solid transparent;background:transparent;color:var(--text);border-radius:8px;cursor:pointer;font-size:14px;line-height:1;display:inline-flex;align-items:center;justify-content:center;gap:5px;white-space:nowrap;transition:background .15s}
 .tb:hover{background:var(--accent-soft)}
 .tb.active{background:var(--accent-soft);color:var(--accent);border-color:var(--accent)}
 .tb.icon{font-size:15px}
@@ -64,10 +52,11 @@ label.color{position:relative;overflow:hidden}
 label.color input[type=color]{position:absolute;inset:0;opacity:0;cursor:pointer;border:none;padding:0}
 label.color span{font-weight:700;border-bottom:3px solid var(--c,#000);line-height:1;padding-bottom:1px}
 .sidebar{grid-area:sb;background:var(--panel);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden}
+.sidebar-backdrop{display:none}
 .sidebar-head{padding:10px;display:flex;flex-direction:column;gap:8px;border-bottom:1px solid var(--border)}
 .btn-primary{background:var(--accent);color:#fff;border:none;border-radius:8px;padding:9px 12px;font-weight:600;cursor:pointer;font-size:13px}
 .search{width:100%;padding:7px 10px;border-radius:8px;border:1px solid var(--border);background:var(--bg);font-size:13px;outline:none}
-.doc-list{flex:1;overflow-y:auto;padding:6px}
+.doc-list{flex:1;overflow-y:auto;padding:6px;-webkit-overflow-scrolling:touch}
 .doc-item{display:flex;align-items:center;gap:6px;padding:8px 9px;border-radius:9px;cursor:pointer;margin-bottom:2px;border:1px solid transparent}
 .doc-item:hover{background:var(--accent-soft)}
 .doc-item.active{background:var(--accent-soft);border-color:var(--accent)}
@@ -84,7 +73,7 @@ label.color span{font-weight:700;border-bottom:3px solid var(--c,#000);line-heig
 .doc-title{flex:1;border:none;background:transparent;font-size:15px;font-weight:700;outline:none;padding:6px 0;min-width:0}
 .doc-meta{font-size:11px;color:var(--muted);white-space:nowrap}
 .file-badge{font-size:11px;padding:3px 10px;background:var(--accent-soft);color:var(--accent);border-radius:20px;font-weight:600;white-space:nowrap;max-width:220px;overflow:hidden;text-overflow:ellipsis;flex-shrink:0}
-.page-wrap{flex:1;overflow-y:auto;padding:26px 20px 80px}
+.page-wrap{flex:1;overflow-y:auto;padding:26px 20px 80px;-webkit-overflow-scrolling:touch}
 .page{max-width:830px;margin:0 auto;background:var(--editor-bg);border-radius:6px;padding:56px 68px;box-shadow:var(--shadow);min-height:calc(100% - 10px)}
 #editor{outline:none;font-size:16px;line-height:1.75;word-wrap:break-word;min-height:300px}
 #editor:empty::before{content:attr(data-placeholder);color:var(--muted);pointer-events:none}
@@ -106,16 +95,17 @@ label.color span{font-weight:700;border-bottom:3px solid var(--c,#000);line-heig
 #editor th,#editor td{border:1px solid var(--border);padding:8px 11px;text-align:left}
 #editor th{background:var(--accent-soft);font-weight:700}
 #editor mark{background:#ffe066;color:#000;border-radius:3px;padding:0 2px}
-.statusbar{grid-area:st;display:flex;align-items:center;gap:16px;padding:5px 16px;background:var(--panel);border-top:1px solid var(--border);font-size:11.5px;color:var(--muted)}
+.statusbar{grid-area:st;display:flex;align-items:center;gap:16px;padding:5px 16px;background:var(--panel);border-top:1px solid var(--border);font-size:11.5px;color:var(--muted);overflow-x:auto;scrollbar-width:none}
+.statusbar::-webkit-scrollbar{display:none}
 .statusbar .spacer{flex:1}
 .statusbar b{color:var(--text);font-weight:600}
 .saved-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:#22c55e;margin-right:5px}
 .saved-dot.dirty{background:#f59e0b}
-.zoom-ctrl{display:flex;align-items:center;gap:4px}
+.zoom-ctrl{display:flex;align-items:center;gap:4px;flex-shrink:0}
 .zoom-ctrl button{border:1px solid var(--border);background:transparent;border-radius:6px;width:22px;height:20px;cursor:pointer;font-size:13px;color:var(--text)}
 .zoom-ctrl button:hover{background:var(--accent-soft)}
 .findbar{position:absolute;top:10px;right:18px;z-index:40;background:var(--panel);border:1px solid var(--border);border-radius:12px;box-shadow:var(--shadow);padding:10px;display:flex;flex-direction:column;gap:8px;width:430px;max-width:calc(100% - 36px)}
-.findbar .row{display:flex;gap:6px;align-items:center}
+.findbar .row{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
 .findbar input[type=text]{flex:1;padding:7px 10px;border:1px solid var(--border);border-radius:8px;background:var(--bg);outline:none;font-size:13px;min-width:0}
 .findbar button{border:1px solid var(--border);background:transparent;border-radius:8px;padding:7px 10px;cursor:pointer;font-size:12.5px;white-space:nowrap}
 .findbar .counter{font-size:11.5px;color:var(--muted);white-space:nowrap;min-width:46px;text-align:center}
@@ -145,8 +135,8 @@ label.color span{font-weight:700;border-bottom:3px solid var(--c,#000);line-heig
 .tts-btns{display:flex;gap:8px;margin-bottom:10px}
 .tts-btns button{flex:1;padding:10px;border-radius:9px;border:1px solid var(--border);background:transparent;cursor:pointer;font-size:13px;font-weight:600}
 .tts-btns button.active{background:var(--accent);color:#fff;border-color:var(--accent)}
-.menu{position:fixed;z-index:60;background:var(--panel);border:1px solid var(--border);border-radius:12px;box-shadow:var(--shadow);padding:6px;min-width:280px}
-.menu button{display:flex;align-items:center;gap:9px;width:100%;border:none;background:transparent;padding:9px 11px;border-radius:8px;cursor:pointer;font-size:13px;text-align:left;color:var(--text)}
+.menu{position:fixed;z-index:60;background:var(--panel);border:1px solid var(--border);border-radius:12px;box-shadow:var(--shadow);padding:6px;min-width:280px;max-width:calc(100vw - 16px)}
+.menu button{display:flex;align-items:center;gap:9px;width:100%;border:none;background:transparent;padding:11px;border-radius:8px;cursor:pointer;font-size:13px;text-align:left;color:var(--text)}
 .menu button:hover{background:var(--accent-soft)}
 .menu button.active{background:var(--accent-soft);font-weight:600}
 .menu hr{border:none;border-top:1px solid var(--border);margin:5px 8px}
@@ -157,7 +147,7 @@ label.color span{font-weight:700;border-bottom:3px solid var(--c,#000);line-heig
 @media print{
   html,body{background:#fff!important;color:#000!important;overflow:visible!important;height:auto!important}
   .app{display:block!important;height:auto!important}
-  .toolbar,.sidebar,.statusbar,.doc-head,.findbar,.menu,#toast,.focus-studio,.file-badge{display:none!important}
+  .toolbar,.sidebar,.statusbar,.doc-head,.findbar,.menu,#toast,.focus-studio,.file-badge,.sidebar-backdrop{display:none!important}
   .main{display:block!important;overflow:visible!important}
   .page-wrap{overflow:visible!important;padding:0!important}
   .page{box-shadow:none!important;padding:0!important;max-width:none!important;border-radius:0!important;background:#fff!important;min-height:0!important}
@@ -169,19 +159,104 @@ label.color span{font-weight:700;border-bottom:3px solid var(--c,#000);line-heig
   #editor table,#editor img,#editor pre,#editor blockquote{page-break-inside:avoid}
   @page{size:A4;margin:2cm}
 }
+
+/* ============================================================
+   МОБИЛЬНАЯ ВЕРСИЯ (≤ 820px) — компактный тулбар, overlay-сайдбар,
+   крупные кнопки, safe-area, без случайного зума по двойному тапу
+   ============================================================ */
 @media (max-width:820px){
+  body{font-size:14.5px}
+  html{-webkit-text-size-adjust:100%}
+
   .app{grid-template-columns:0 1fr}
-  .app:not(.no-sidebar) .sidebar{position:fixed;top:0;bottom:0;left:0;width:280px;z-index:50;box-shadow:var(--shadow);padding-top:env(safe-area-inset-top)}
-  .page{padding:28px 20px}
-  .page-wrap{padding:14px 8px 60px}
-  .findbar{width:calc(100% - 20px);right:10px}
-  .focus-studio{width:100%;max-width:340px}
+
+  /* --- Тулбар: одна строка с горизонтальным скроллом, кнопки крупнее --- */
+  .toolbar{
+    padding:5px 6px;gap:0;
+    overflow-x:auto;overflow-y:hidden;
+    -webkit-overflow-scrolling:touch;
+    scrollbar-width:none;
+    scroll-snap-type:x proximity;
+  }
+  .toolbar::-webkit-scrollbar{display:none}
+  .brand{font-size:13px;padding-right:8px;margin-right:2px;gap:4px}
+  .brand span sup{display:none}
+  .brand span::after{content:"PRO";font-size:8px;color:var(--accent);font-weight:800;margin-left:2px}
+  .group{padding:0 3px;border-right:none}
+  .group+.group{border-left:1px solid var(--border);padding-left:6px;margin-left:3px}
+  .tb{height:42px;min-width:42px;padding:0 9px;font-size:16px;border-radius:9px}
+  .tb.icon{font-size:18px}
+  .tb.b,.tb.i,.tb.u,.tb.s{font-size:15px}
+  select.tb{height:40px;font-size:14px;max-width:120px;padding:0 6px}
+
+  /* --- Сайдбар как overlay --- */
+  .app .sidebar{
+    position:fixed;top:0;left:0;bottom:0;
+    width:82vw;max-width:320px;
+    z-index:80;
+    transform:translateX(-102%);
+    transition:transform .24s cubic-bezier(.4,0,.2,1);
+    box-shadow:8px 0 32px rgba(0,0,0,.28);
+    padding-top:env(safe-area-inset-top);
+    padding-bottom:env(safe-area-inset-bottom);
+    border-right:none;
+  }
+  .app.sidebar-open .sidebar{transform:translateX(0)}
+  .app.no-sidebar .sidebar{display:flex} /* на мобилке no-sidebar не работает — используем .sidebar-open */
+  .sidebar-backdrop{
+    display:block;
+    position:fixed;inset:0;
+    background:rgba(0,0,0,.45);
+    z-index:75;
+    opacity:0;pointer-events:none;
+    transition:opacity .2s;
+    -webkit-backdrop-filter:blur(2px);
+    backdrop-filter:blur(2px);
+  }
+  .app.sidebar-open .sidebar-backdrop{opacity:1;pointer-events:auto}
+  .sidebar-head{padding:14px 12px}
+  .btn-primary{padding:12px;font-size:14px}
+  .search{padding:10px 12px;font-size:14px}
+  .doc-item{padding:12px 12px;border-radius:11px}
+  .doc-item-title{font-size:14px}
+  .doc-item-sub{font-size:12px}
+  .doc-del{opacity:.7;font-size:15px;padding:6px 8px}
+
+  /* --- Главная область --- */
+  .doc-head{padding:6px 14px}
+  .doc-title{font-size:16px;padding:8px 0}
+  .doc-meta{display:none}
+  .file-badge{max-width:120px;font-size:10.5px;padding:3px 8px}
+  .page-wrap{padding:10px 6px 60px}
+  .page{padding:22px 16px 32px;border-radius:10px;min-height:calc(100% - 4px)}
+  #editor{font-size:16px;line-height:1.7}
+
+  /* --- Статусбар: компактный --- */
+  .statusbar{padding:4px 12px;gap:10px;font-size:11px}
+  .statusbar>span:nth-child(n+4):not(.spacer):not(.zoom-ctrl){display:none} /* Скрываем часть статистики */
+  .zoom-ctrl{display:none}
+
+  /* --- Поиск: full width --- */
+  .findbar{width:calc(100% - 16px);right:8px;top:8px;padding:12px}
+  .findbar input[type=text]{font-size:15px;padding:9px 11px}
+  .findbar button{padding:9px 12px;font-size:13px}
+
+  /* --- Focus Studio: почти full screen --- */
+  .focus-studio{width:100%;max-width:400px;box-shadow:-8px 0 40px rgba(0,0,0,.35)}
+
+  /* --- Меню: не вылезает за экран --- */
+  .menu{min-width:260px;max-width:calc(100vw - 20px)}
+
+  /* --- Меню/тосты учитывают safe-area --- */
+  #toast{bottom:calc(60px + env(safe-area-inset-bottom))}
 }
 </style>
 </head>
 <body>
 
 <div class="app" id="app">
+  <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
   <header class="toolbar">
     <div class="brand">⚡ <span>Nitpad<sup>PRO</sup></span></div>
     <div class="tools">
@@ -258,7 +333,7 @@ label.color span{font-weight:700;border-bottom:3px solid var(--c,#000);line-heig
     </div>
   </header>
 
-  <aside class="sidebar">
+  <aside class="sidebar" id="sidebar">
     <div class="sidebar-head">
       <button class="btn-primary" id="newDocBtn">+ Новый документ</button>
       <input class="search" id="docSearch" placeholder="Поиск по документам…">
@@ -352,38 +427,30 @@ var $ = function(s){ return document.querySelector(s); };
 var $$ = function(s){ return Array.prototype.slice.call(document.querySelectorAll(s)); };
 var uid = function(){ return Date.now().toString(36) + Math.random().toString(36).slice(2,7); };
 var HAS_FS = typeof window.showSaveFilePicker === "function" && typeof window.showOpenFilePicker === "function";
+var IS_MOBILE = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || window.matchMedia("(max-width:820px)").matches;
 
-/* ============================================================
-   PYTHON BRIDGE — определеяется ДО DOMContentLoaded,
-   чтобы к моменту инициализации было известно, в каком
-   окружении мы работаем (браузер или pywebview .exe/.app).
-   ============================================================ */
+/* Определяем реальную высоту окна с учётом клавиатуры на мобилке */
+function fixViewportHeight(){
+  document.documentElement.style.setProperty("--vh", window.innerHeight * 0.01 + "px");
+}
+fixViewportHeight();
+window.addEventListener("resize", fixViewportHeight);
+window.addEventListener("orientationchange", function(){ setTimeout(fixViewportHeight, 300); });
+if(window.visualViewport){
+  window.visualViewport.addEventListener("resize", function(){
+    document.documentElement.style.setProperty("--vh", window.visualViewport.height * 0.01 + "px");
+  });
+}
+
 var HAS_PYWEBVIEW = false;
+window.addEventListener('pywebviewready', function(){ HAS_PYWEBVIEW = true; });
+if(typeof window.pywebview !== 'undefined' && window.pywebview.api){ HAS_PYWEBVIEW = true; }
 
-// pywebview инжектит window.pywebview и генерирует событие
-window.addEventListener('pywebviewready', function(){
-  HAS_PYWEBVIEW = true;
-  console.log('[Nitpad Pro] Python bridge готов');
-});
-// Может быть уже готов к моменту загрузки скрипта
-if(typeof window.pywebview !== 'undefined' && window.pywebview.api){
-  HAS_PYWEBVIEW = true;
-}
-
-function escapeHTML(s){
-  return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#39;");
-}
-function escapeXml(s){
-  return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&apos;");
-}
-function stripTags(html){
-  var d = document.createElement("div"); d.innerHTML = html || ""; return d.textContent || "";
-}
+function escapeHTML(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#39;"); }
+function escapeXml(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&apos;"); }
+function stripTags(html){ var d = document.createElement("div"); d.innerHTML = html || ""; return d.textContent || ""; }
 function countWords(t){ t = (t||"").trim(); return t ? t.split(/\s+/).filter(Boolean).length : 0; }
-function fmtDate(ts){
-  var d = new Date(ts);
-  return d.toLocaleDateString("ru-RU") + ", " + d.toLocaleTimeString("ru-RU",{hour:"2-digit",minute:"2-digit"});
-}
+function fmtDate(ts){ var d = new Date(ts); return d.toLocaleDateString("ru-RU") + ", " + d.toLocaleTimeString("ru-RU",{hour:"2-digit",minute:"2-digit"}); }
 
 var toastTimer;
 function toast(msg){
@@ -392,7 +459,6 @@ function toast(msg){
   toastTimer = setTimeout(function(){ t.classList.remove("show"); }, 2600);
 }
 
-/* ============ ТЕМЫ ============ */
 var THEMES = [
   {id:"light",name:"Светлая",accent:"#4f46e5",bg:"#ffffff"},
   {id:"dark",name:"Тёмная",accent:"#8b8bff",bg:"#111317"},
@@ -414,13 +480,9 @@ function setTheme(id){
   try{ localStorage.setItem("nitpad.theme", id); }catch(e){}
 }
 
-/* ============ ХРАНИЛИЩЕ ============ */
 var STORAGE_DOCS = "nitpad.docs.v1";
 var STORAGE_ACTIVE = "nitpad.active.v1";
-
-function newDocObject(title, html){
-  return {id:uid(), title:title||"Без названия", html:html||"", created:Date.now(), updated:Date.now()};
-}
+function newDocObject(title, html){ return {id:uid(), title:title||"Без названия", html:html||"", created:Date.now(), updated:Date.now()}; }
 
 var docs = [], activeId = null, saveTimer = null, savedRange = null, zoom = 100;
 var docFiles = new Map();
@@ -437,10 +499,9 @@ function loadState(){
       "<li><b>📘 Word (.docx)</b> — настоящий файл (ZIP + OOXML).</li>" +
       "<li><b>⚡ Nitpad Pro (.nppro)</b> — родной формат.</li>" +
       "<li><b>🎨 9 тем</b> — светлая, тёмная, Nord, Monokai и другие.</li>" +
-      "<li><b>💾 Работа с файлами</b> — нативные диалоги ОС (Ctrl+O / Ctrl+S).</li>" +
       "<li><b>🎧 Focus Studio</b> — помодоро, фоновые звуки, чтение вслух.</li>" +
       "</ul>" +
-      "<blockquote>Это десктоп-версия. Все файловые операции идут через системные диалоги.</blockquote>";
+      "<blockquote>Работает и на компьютере, и на телефоне.</blockquote>";
     docs = [newDocObject("Добро пожаловать в Nitpad Pro ⚡", welcome)];
   }
   activeId = localStorage.getItem(STORAGE_ACTIVE);
@@ -464,25 +525,17 @@ function persist(){
 
 function updateStorageInfo(){
   var bytes = new Blob([JSON.stringify(docs)]).size;
-  var size = bytes < 1024 ? bytes + " Б"
-           : bytes < 1048576 ? (bytes/1024).toFixed(1) + " КБ"
-           : (bytes/1048576).toFixed(2) + " МБ";
+  var size = bytes < 1024 ? bytes + " Б" : bytes < 1048576 ? (bytes/1024).toFixed(1) + " КБ" : (bytes/1048576).toFixed(2) + " МБ";
   $("#storageSize").textContent = size;
   var n = docs.length;
-  var word = (n%10===1 && n%100!==11) ? "документ"
-           : ([2,3,4].indexOf(n%10) !== -1 && [12,13,14].indexOf(n%100) === -1) ? "документа"
-           : "документов";
+  var word = (n%10===1 && n%100!==11) ? "документ" : ([2,3,4].indexOf(n%10) !== -1 && [12,13,14].indexOf(n%100) === -1) ? "документа" : "документов";
   $("#docCount").textContent = n + " " + word;
 }
 
-/* ============ ДОКУМЕНТЫ ============ */
 var editor = $("#editor");
 var titleInput = $("#docTitle");
 var app = $("#app");
-function currentDoc(){
-  for(var i = 0; i < docs.length; i++){ if(docs[i].id === activeId) return docs[i]; }
-  return null;
-}
+function currentDoc(){ for(var i = 0; i < docs.length; i++){ if(docs[i].id === activeId) return docs[i]; } return null; }
 function setSavedState(state, text){
   var dot = $("#savedDot");
   if(state !== "saved") dot.classList.add("dirty"); else dot.classList.remove("dirty");
@@ -502,7 +555,7 @@ function saveNow(){
 }
 function updateFileBadge(){
   var b = $("#fileBadge");
-  if(activeFileName){ b.hidden = false; b.textContent = "💾 " + activeFileName; b.title = "Файл: " + activeFileName; }
+  if(activeFileName){ b.hidden = false; b.textContent = "💾 " + activeFileName; }
   else b.hidden = true;
 }
 function openDoc(id){
@@ -517,25 +570,19 @@ function openDoc(id){
   var fi = docFiles.get(id);
   if(fi){ activeFileHandle = fi.handle; activeFileName = fi.name; activeFileFormat = fi.format; }
   else{ activeFileHandle = null; activeFileName = null; activeFileFormat = "html"; }
-  updateFileBadge();
-  setSavedState("saved","Сохранено");
-  updateStats();
-  renderDocList();
-  renderDocMeta();
+  updateFileBadge(); setSavedState("saved","Сохранено");
+  updateStats(); renderDocList(); renderDocMeta();
   editor.focus();
   $("#pageWrap").scrollTop = 0;
 }
 function createDoc(title, html){
   saveNow();
   var d = newDocObject(title||"Новый документ", html||"");
-  docs.unshift(d);
-  activeId = d.id;
-  persist();
+  docs.unshift(d); activeId = d.id; persist();
   titleInput.value = (d.title === "Новый документ") ? "" : d.title;
   editor.innerHTML = d.html;
   activeFileHandle = null; activeFileName = null; activeFileFormat = "html";
-  updateFileBadge();
-  updateStats(); renderDocList(); renderDocMeta();
+  updateFileBadge(); updateStats(); renderDocList(); renderDocMeta();
   titleInput.focus();
   toast("Создан новый документ");
 }
@@ -548,18 +595,15 @@ function deleteDoc(id){
   if(!docs.length) docs.push(newDocObject("Без названия",""));
   docFiles.delete(id);
   if(activeId === id) activeId = docs[0].id;
-  persist();
-  openDoc(activeId);
+  persist(); openDoc(activeId);
   toast("Документ удалён");
 }
 function renderDocList(){
   var q = ($("#docSearch").value || "").toLowerCase().trim();
   var list = $("#docList");
-  var items = docs
-    .filter(function(d){
-      return !q || d.title.toLowerCase().indexOf(q) !== -1 || stripTags(d.html).toLowerCase().indexOf(q) !== -1;
-    })
-    .sort(function(a,b){ return b.updated - a.updated; });
+  var items = docs.filter(function(d){
+    return !q || d.title.toLowerCase().indexOf(q) !== -1 || stripTags(d.html).toLowerCase().indexOf(q) !== -1;
+  }).sort(function(a,b){ return b.updated - a.updated; });
   if(!items.length){ list.innerHTML = '<div class="empty">Ничего не найдено</div>'; return; }
   var html = "";
   items.forEach(function(d){
@@ -579,7 +623,6 @@ function renderDocMeta(){
   $("#docMeta").textContent = "Изменён: " + fmtDate(d.updated);
 }
 
-/* ============ СТАТИСТИКА ============ */
 function updateStats(){
   var text = editor.innerText || "";
   var words = countWords(text);
@@ -590,7 +633,6 @@ function updateStats(){
   $("#statTime").textContent = (words === 0 ? 0 : Math.max(1, Math.ceil(words/200))) + " мин";
 }
 
-/* ============ КОМАНДЫ ============ */
 function rememberSelection(){
   var sel = window.getSelection();
   if(sel.rangeCount && editor.contains(sel.anchorNode)) savedRange = sel.getRangeAt(0).cloneRange();
@@ -609,9 +651,7 @@ function exec(cmd, value){
   try{ document.execCommand("styleWithCSS", false, cssMode); }catch(e){}
   document.execCommand(cmd, false, value === undefined ? null : value);
   try{ document.execCommand("styleWithCSS", false, false); }catch(e){}
-  updateStats();
-  scheduleSave();
-  updateToolbarState();
+  updateStats(); scheduleSave(); updateToolbarState();
 }
 function updateToolbarState(){
   ["bold","italic","underline","strikeThrough","insertUnorderedList","insertOrderedList",
@@ -651,11 +691,9 @@ function setFontSize(px){
     while(f.firstChild) span.appendChild(f.firstChild);
     f.parentNode.replaceChild(span, f);
   });
-  updateStats();
-  scheduleSave();
+  updateStats(); scheduleSave();
 }
 
-/* ============ ССЫЛКИ / ИЗОБРАЖЕНИЯ / ТАБЛИЦЫ ============ */
 function insertHTML(html){
   restoreSelection();
   editor.focus();
@@ -673,8 +711,7 @@ function insertHTML(html){
       r.collapse(false);
     }
   }
-  updateStats();
-  scheduleSave();
+  updateStats(); scheduleSave();
 }
 function addLink(){
   restoreSelection();
@@ -717,7 +754,6 @@ function insertTable(){
   toast("Таблица " + rows + "×" + cols);
 }
 
-/* ============ ОЧИСТКА HTML ============ */
 function sanitizeHTML(html){
   var doc = new DOMParser().parseFromString(html, "text/html");
   doc.querySelectorAll("style,script,meta,link,title,base,noscript").forEach(function(n){ n.remove(); });
@@ -743,7 +779,6 @@ function sanitizeHTML(html){
   return doc.body.innerHTML;
 }
 
-/* ============ HTML ДОКУМЕНТ ============ */
 function fullHTMLDocument(){
   var d = currentDoc();
   var body = editor.innerHTML;
@@ -763,7 +798,6 @@ function fullHTMLDocument(){
     "</style>\n</head>\n<body>\n" + body + "\n</body>\n</html>";
 }
 
-/* ============ MARKDOWN ============ */
 function htmlToMarkdown(html){
   var root = document.createElement("div");
   root.innerHTML = html;
@@ -854,10 +888,8 @@ function markdownToHTML(md){
   }
   lines.forEach(function(line){
     if(line.trim().indexOf("```") === 0){
-      if(inCode){
-        html += "<pre><code>" + escapeHTML(codeBuf.join("\n")) + "</code></pre>";
-        codeBuf = []; inCode = false;
-      } else { flushList(); inCode = true; }
+      if(inCode){ html += "<pre><code>" + escapeHTML(codeBuf.join("\n")) + "</code></pre>"; codeBuf = []; inCode = false; }
+      else { flushList(); inCode = true; }
       return;
     }
     if(inCode){ codeBuf.push(line); return; }
@@ -884,7 +916,6 @@ function markdownToHTML(md){
   return html;
 }
 
-/* ============ ZIP CREATOR (для .docx) ============ */
 var CRC_TABLE = (function(){
   var t = new Uint32Array(256);
   for(var i = 0; i < 256; i++){
@@ -901,9 +932,7 @@ function crc32(bytes){
 }
 function createZip(files){
   var enc = new TextEncoder();
-  var chunks = [];
-  var central = [];
-  var offset = 0;
+  var chunks = []; var central = []; var offset = 0;
   function writeU16(arr, off, val){ arr[off] = val & 0xFF; arr[off+1] = (val >>> 8) & 0xFF; }
   function writeU32(arr, off, val){
     arr[off] = val & 0xFF; arr[off+1] = (val >>> 8) & 0xFF;
@@ -933,23 +962,19 @@ function createZip(files){
     for(var j = 0; j < nameBytes.length; j++) cd[46 + j] = nameBytes[j];
     central.push(cd);
   });
-  var cdOffset = offset;
-  var cdSize = 0;
+  var cdOffset = offset; var cdSize = 0;
   central.forEach(function(c){ chunks.push(c); cdSize += c.length; });
   var eocd = new Uint8Array(22);
   writeU32(eocd, 0, 0x06054b50); writeU16(eocd, 4, 0); writeU16(eocd, 6, 0);
   writeU16(eocd, 8, files.length); writeU16(eocd, 10, files.length);
   writeU32(eocd, 12, cdSize); writeU32(eocd, 16, cdOffset); writeU16(eocd, 20, 0);
   chunks.push(eocd);
-  var total = 0;
-  chunks.forEach(function(c){ total += c.length; });
-  var out = new Uint8Array(total);
-  var o = 0;
+  var total = 0; chunks.forEach(function(c){ total += c.length; });
+  var out = new Uint8Array(total); var o = 0;
   chunks.forEach(function(c){ out.set(c, o); o += c.length; });
   return out;
 }
 
-/* ============ DOCX GENERATOR ============ */
 function htmlToWordParagraphs(html){
   var root = document.createElement("div");
   root.innerHTML = html;
@@ -1085,24 +1110,16 @@ function generateDocx(){
   var now = new Date().toISOString().replace(/\.\d{3}Z$/, "Z");
   var core = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
     '<cp:coreProperties xmlns:cp="http://schemas.openxmlformats.org/package/2006/metadata/core-properties" ' +
-    'xmlns:dc="http://purl.org/dc/elements/1.1/" ' +
-    'xmlns:dcterms="http://purl.org/dc/terms/" ' +
-    'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">' +
+    'xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">' +
     "<dc:title>" + escapeXml(title) + "</dc:title>" +
-    "<dc:creator>Nitpad Pro</dc:creator>" +
-    "<cp:lastModifiedBy>Nitpad Pro</cp:lastModifiedBy>" +
+    "<dc:creator>Nitpad Pro</dc:creator><cp:lastModifiedBy>Nitpad Pro</cp:lastModifiedBy>" +
     '<dcterms:created xsi:type="dcterms:W3CDTF">' + now + "</dcterms:created>" +
     '<dcterms:modified xsi:type="dcterms:W3CDTF">' + now + "</dcterms:modified>" +
     "</cp:coreProperties>";
   var document = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
-    '<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">' +
-    "<w:body>" + body +
-    "<w:sectPr>" +
-    '<w:pgSz w:w="11906" w:h="16838"/>' +
-    '<w:pgMar w:top="1134" w:right="1134" w:bottom="1134" w:left="1134" w:header="708" w:footer="708" w:gutter="0"/>' +
-    "</w:sectPr>" +
-    "</w:body>" +
-    "</w:document>";
+    '<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:body>' + body +
+    '<w:sectPr><w:pgSz w:w="11906" w:h="16838"/><w:pgMar w:top="1134" w:right="1134" w:bottom="1134" w:left="1134" w:header="708" w:footer="708" w:gutter="0"/></w:sectPr>' +
+    "</w:body></w:document>";
   return createZip([
     {name:"[Content_Types].xml", data:contentTypes},
     {name:"_rels/.rels", data:rels},
@@ -1111,44 +1128,28 @@ function generateDocx(){
   ]);
 }
 
-/* ============ NPPRO ============ */
 function generateNppro(){
   var d = currentDoc();
   var payload = {
-    format: "Nitpad Pro Document",
-    formatVersion: 1,
-    magic: "NITPADPRO",
-    created: new Date(d.created).toISOString(),
-    modified: new Date().toISOString(),
-    title: d.title,
-    theme: currentTheme,
-    zoom: zoom,
-    html: editor.innerHTML,
-    text: editor.innerText
+    format: "Nitpad Pro Document", formatVersion: 1, magic: "NITPADPRO",
+    created: new Date(d.created).toISOString(), modified: new Date().toISOString(),
+    title: d.title, theme: currentTheme, zoom: zoom,
+    html: editor.innerHTML, text: editor.innerText
   };
   return "NITPADPRO\n" + JSON.stringify(payload, null, 2);
 }
 function parseNppro(text){
-  if(text.indexOf("NITPADPRO\n") === 0){
-    try{ return JSON.parse(text.slice(10)); }catch(e){ return null; }
-  }
-  try{
-    var o = JSON.parse(text);
-    if(o.magic === "NITPADPRO" || o.format === "Nitpad Pro Document") return o;
-  }catch(e){}
+  if(text.indexOf("NITPADPRO\n") === 0){ try{ return JSON.parse(text.slice(10)); }catch(e){ return null; } }
+  try{ var o = JSON.parse(text); if(o.magic === "NITPADPRO" || o.format === "Nitpad Pro Document") return o; }catch(e){}
   return null;
 }
 
-/* ============ DOWNLOAD (браузерный fallback) ============ */
 function download(filename, content, mime){
   var blob = new Blob([content], {type:mime});
   var url = URL.createObjectURL(blob);
   var a = document.createElement("a");
-  a.href = url;
-  a.download = filename;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
+  a.href = url; a.download = filename;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
   setTimeout(function(){ URL.revokeObjectURL(url); }, 2000);
 }
 function safeFileName(){
@@ -1173,14 +1174,12 @@ function getContentForFormat(fmt){
   return {content:fullHTMLDocument(), mime:"text/html;charset=utf-8", ext:"html"};
 }
 
-/* ============ ПЕЧАТЬ ============ */
 function doPrint(){
   saveNow();
   if(document.activeElement && document.activeElement.blur) document.activeElement.blur();
   setTimeout(function(){ window.print(); }, 100);
 }
 
-/* ============ СОХРАНЕНИЕ ЧЕРЕЗ PYTHON (нативный диалог) ============ */
 function saveToFileNative(forceDialog){
   saveNow();
   var d = currentDoc(); if(!d) return;
@@ -1188,44 +1187,31 @@ function saveToFileNative(forceDialog){
   var info = getContentForFormat(fmt);
   var suggested = activeFileName || (safeFileName() + "." + info.ext);
   var payload = info.content;
-
-  // Uint8Array (.docx) — кодируем в base64
   if(payload instanceof Uint8Array){
-    var bin = "";
-    var CHUNK = 0x8000;
+    var bin = ""; var CHUNK = 0x8000;
     for(var i = 0; i < payload.length; i += CHUNK){
       var slice = payload.subarray(i, i + CHUNK);
       bin += String.fromCharCode.apply(null, slice);
     }
     payload = "__BASE64__:" + btoa(bin);
   }
-
   window.pywebview.api.save_file(payload, suggested).then(function(res){
     if(!res) return;
     if(res.status === "ok"){
       activeFileName = res.name;
       activeFileFormat = formatFromFilename(res.name);
       docFiles.set(d.id, {handle:null, name:res.name, format:activeFileFormat});
-      updateFileBadge();
-      renderDocList();
+      updateFileBadge(); renderDocList();
       setSavedState("saved", "Сохранено в " + res.name);
       toast("💾 Сохранено: " + res.name);
-    } else if(res.status === "error"){
-      toast("Ошибка: " + res.message);
-    }
-  }).catch(function(err){
-    toast("Ошибка моста: " + err);
-  });
+    } else if(res.status === "error"){ toast("Ошибка: " + res.message); }
+  }).catch(function(err){ toast("Ошибка моста: " + err); });
 }
 
-/* ============ СОХРАНЕНИЕ (универсальная функция) ============ */
 function saveToFile(forceDialog){
-  if(HAS_PYWEBVIEW && window.pywebview && window.pywebview.api){
-    return saveToFileNative(forceDialog);
-  }
+  if(HAS_PYWEBVIEW && window.pywebview && window.pywebview.api) return saveToFileNative(forceDialog);
   saveNow();
   var d = currentDoc(); if(!d) return;
-
   if(!HAS_FS){
     var fmt = activeFileFormat || "html";
     var info = getContentForFormat(fmt);
@@ -1234,7 +1220,6 @@ function saveToFile(forceDialog){
     toast("Файл скачан: " + fname);
     return;
   }
-
   var types = [
     {description:"Nitpad Pro (.nppro)", accept:{"application/x-nitpad-pro":[".nppro"]}},
     {description:"Word (.docx)", accept:{"application/vnd.openxmlformats-officedocument.wordprocessingml.document":[".docx"]}},
@@ -1243,210 +1228,150 @@ function saveToFile(forceDialog){
     {description:"Текст", accept:{"text/plain":[".txt"]}}
   ];
   var suggested = activeFileName || (safeFileName() + ".html");
-
   (async function(){
     try{
       var handle = activeFileHandle;
-      if(!handle || forceDialog){
-        handle = await window.showSaveFilePicker({suggestedName:suggested, types:types});
-      }
+      if(!handle || forceDialog) handle = await window.showSaveFilePicker({suggestedName:suggested, types:types});
       var fname = handle.name;
       var fmt = formatFromFilename(fname);
       var info = getContentForFormat(fmt);
       var writable = await handle.createWritable();
       await writable.write(info.content);
       await writable.close();
-      activeFileHandle = handle;
-      activeFileName = fname;
-      activeFileFormat = fmt;
+      activeFileHandle = handle; activeFileName = fname; activeFileFormat = fmt;
       docFiles.set(d.id, {handle:handle, name:fname, format:fmt});
       updateFileBadge(); renderDocList();
       setSavedState("saved", "Сохранено в " + fname);
       toast("💾 Сохранено: " + fname);
     }catch(e){
       if(e.name === "AbortError") return;
-      console.error(e);
       toast("Ошибка: " + (e.message || e.name));
     }
   })();
 }
 
-/* ============ ОТКРЫТИЕ ЧЕРЕЗ PYTHON (нативный диалог) ============ */
 function openFileNative(){
   window.pywebview.api.open_file().then(function(res){
     if(!res) return;
     if(res.status === "cancelled") return;
     if(res.status === "error"){ toast("Ошибка: " + res.message); return; }
     loadNativeFile(res);
-  }).catch(function(err){
-    toast("Ошибка моста: " + err);
-  });
+  }).catch(function(err){ toast("Ошибка моста: " + err); });
 }
-
 function loadNativeFile(res){
   var ext = (res.name.split(".").pop() || "").toLowerCase();
   var text = res.content || "";
-
   if(ext === "nppro"){
     var data = parseNppro(text);
     if(!data){ toast("Неверный .nppro"); return; }
     saveNow();
     var d = newDocObject(data.title || res.name.replace(/\.[^.]+$/, ""), data.html || "");
     docs.unshift(d); activeId = d.id; persist();
-    activeFileName = res.name;
-    activeFileFormat = "nppro";
+    activeFileName = res.name; activeFileFormat = "nppro";
     docFiles.set(d.id, {handle:null, name:res.name, format:"nppro"});
-    titleInput.value = d.title;
-    editor.innerHTML = d.html;
+    titleInput.value = d.title; editor.innerHTML = d.html;
     if(data.theme) setTheme(data.theme);
     updateFileBadge(); setSavedState("saved","Открыт файл");
     updateStats(); renderDocList(); renderDocMeta();
-    toast("⚡ Открыт: " + res.name);
-    return;
+    toast("⚡ Открыт: " + res.name); return;
   }
-
   if(ext === "json"){
     try{
       var j = JSON.parse(text);
       if(j && Array.isArray(j.documents) && j.documents.length){
         if(!confirm("Резервная копия с " + j.documents.length + " документами. Заменить текущие?")) return;
         docs = j.documents; activeId = docs[0].id;
-        persist(); openDoc(activeId);
-        toast("Резервная копия восстановлена");
-        return;
+        persist(); openDoc(activeId); toast("Резервная копия восстановлена"); return;
       }
     }catch(e){}
   }
-
   var html;
-  if(ext === "html" || ext === "htm"){
-    html = sanitizeHTML(text) || ("<p>" + escapeHTML(text).replace(/\n/g,"<br>") + "</p>");
-  } else if(ext === "md" || ext === "markdown"){
-    html = markdownToHTML(text);
-  } else {
-    html = text.split(/\n{2,}/).map(function(p){
-      return "<p>" + escapeHTML(p).replace(/\n/g,"<br>") + "</p>";
-    }).join("");
-  }
+  if(ext === "html" || ext === "htm") html = sanitizeHTML(text) || ("<p>" + escapeHTML(text).replace(/\n/g,"<br>") + "</p>");
+  else if(ext === "md" || ext === "markdown") html = markdownToHTML(text);
+  else html = text.split(/\n{2,}/).map(function(p){ return "<p>" + escapeHTML(p).replace(/\n/g,"<br>") + "</p>"; }).join("");
   saveNow();
   var baseName = res.name.replace(/\.[^.]+$/, "");
   var doc = newDocObject(baseName, html);
   docs.unshift(doc); activeId = doc.id; persist();
-  activeFileName = res.name;
-  activeFileFormat = formatFromFilename(res.name);
+  activeFileName = res.name; activeFileFormat = formatFromFilename(res.name);
   docFiles.set(doc.id, {handle:null, name:res.name, format:activeFileFormat});
-  titleInput.value = baseName;
-  editor.innerHTML = html;
+  titleInput.value = baseName; editor.innerHTML = html;
   updateFileBadge(); setSavedState("saved","Открыт файл");
   updateStats(); renderDocList(); renderDocMeta();
   toast("📂 Открыт: " + res.name);
 }
 
-/* ============ ОТКРЫТИЕ ФАЙЛА (универсальная функция) ============ */
 function openFileFromDisk(){
-  if(HAS_PYWEBVIEW && window.pywebview && window.pywebview.api){
-    return openFileNative();
-  }
+  if(HAS_PYWEBVIEW && window.pywebview && window.pywebview.api) return openFileNative();
   if(!HAS_FS){ $("#fileInput").click(); return; }
-
   var types = [
     {description:"Все поддерживаемые", accept:{
       "application/x-nitpad-pro":[".nppro"],
       "application/vnd.openxmlformats-officedocument.wordprocessingml.document":[".docx"],
-      "text/html":[".html",".htm"],
-      "text/markdown":[".md",".markdown"],
-      "text/plain":[".txt"],
-      "application/json":[".json"]
+      "text/html":[".html",".htm"], "text/markdown":[".md",".markdown"],
+      "text/plain":[".txt"], "application/json":[".json"]
     }},
     {description:"Все файлы", accept:{"*/*":[".*"]}}
   ];
-
   (async function(){
     try{
       var handles = await window.showOpenFilePicker({multiple:false, types:types});
       await loadFromHandle(handles[0]);
     }catch(e){
       if(e.name === "AbortError") return;
-      console.error(e);
       toast("Ошибка: " + (e.message || e.name));
     }
   })();
 }
-
 function loadFromHandle(handle){
   (async function(){
     try{
       var file = await handle.getFile();
       var text = await file.text();
       var ext = (file.name.split(".").pop() || "").toLowerCase();
-
       if(ext === "nppro"){
         var data = parseNppro(text);
         if(!data){ toast("Неверный формат .nppro"); return; }
         saveNow();
         var d = newDocObject(data.title || file.name.replace(/\.[^.]+$/, ""), data.html || "");
         docs.unshift(d); activeId = d.id; persist();
-        activeFileHandle = handle;
-        activeFileName = file.name;
-        activeFileFormat = "nppro";
+        activeFileHandle = handle; activeFileName = file.name; activeFileFormat = "nppro";
         docFiles.set(d.id, {handle:handle, name:file.name, format:"nppro"});
-        titleInput.value = d.title;
-        editor.innerHTML = d.html;
+        titleInput.value = d.title; editor.innerHTML = d.html;
         if(data.theme) setTheme(data.theme);
         updateFileBadge(); setSavedState("saved","Открыт файл");
         updateStats(); renderDocList(); renderDocMeta();
-        toast("⚡ Открыт: " + file.name);
-        return;
+        toast("⚡ Открыт: " + file.name); return;
       }
-
       if(ext === "json"){
         try{
           var j = JSON.parse(text);
           if(j && Array.isArray(j.documents) && j.documents.length){
             if(!confirm("Резервная копия с " + j.documents.length + " документами. Заменить текущие?")) return;
             docs = j.documents; activeId = docs[0].id;
-            persist(); openDoc(activeId);
-            toast("Резервная копия восстановлена");
-            return;
+            persist(); openDoc(activeId); toast("Резервная копия восстановлена"); return;
           }
         }catch(e){}
       }
-
-      if(ext === "docx"){
-        toast("Формат .docx — только для экспорта");
-        return;
-      }
-
+      if(ext === "docx"){ toast("Формат .docx — только для экспорта"); return; }
       var html;
-      if(ext === "html" || ext === "htm"){
-        html = sanitizeHTML(text) || ("<p>" + escapeHTML(text).replace(/\n/g,"<br>") + "</p>");
-      } else if(ext === "md" || ext === "markdown"){
-        html = markdownToHTML(text);
-      } else {
-        html = text.split(/\n{2,}/).map(function(p){ return "<p>" + escapeHTML(p).replace(/\n/g,"<br>") + "</p>"; }).join("");
-      }
-
+      if(ext === "html" || ext === "htm") html = sanitizeHTML(text) || ("<p>" + escapeHTML(text).replace(/\n/g,"<br>") + "</p>");
+      else if(ext === "md" || ext === "markdown") html = markdownToHTML(text);
+      else html = text.split(/\n{2,}/).map(function(p){ return "<p>" + escapeHTML(p).replace(/\n/g,"<br>") + "</p>"; }).join("");
       saveNow();
       var baseName = file.name.replace(/\.[^.]+$/, "");
       var doc = newDocObject(baseName, html);
       docs.unshift(doc); activeId = doc.id; persist();
-      activeFileHandle = handle;
-      activeFileName = file.name;
-      activeFileFormat = formatFromFilename(file.name);
+      activeFileHandle = handle; activeFileName = file.name; activeFileFormat = formatFromFilename(file.name);
       docFiles.set(doc.id, {handle:handle, name:file.name, format:activeFileFormat});
-      titleInput.value = baseName;
-      editor.innerHTML = html;
+      titleInput.value = baseName; editor.innerHTML = html;
       updateFileBadge(); setSavedState("saved","Открыт файл");
       updateStats(); renderDocList(); renderDocMeta();
       toast("📂 Открыт: " + file.name);
-    }catch(e){
-      console.error(e);
-      toast("Ошибка чтения файла: " + e.message);
-    }
+    }catch(e){ toast("Ошибка чтения файла: " + e.message); }
   })();
 }
 
-/* ============ ИМПОРТ (fallback <input type=file>) ============ */
 function importFile(file){
   var r = new FileReader();
   var ext = (file.name.split(".").pop() || "").toLowerCase();
@@ -1458,15 +1383,12 @@ function importFile(file){
       saveNow();
       var doc = newDocObject(data.title || file.name.replace(/\.[^.]+$/, ""), data.html || "");
       docs.unshift(doc); activeId = doc.id; persist();
-      titleInput.value = doc.title;
-      editor.innerHTML = doc.html;
+      titleInput.value = doc.title; editor.innerHTML = doc.html;
       if(data.theme) setTheme(data.theme);
-      activeFileName = file.name;
-      activeFileFormat = "nppro";
+      activeFileName = file.name; activeFileFormat = "nppro";
       docFiles.set(doc.id, {handle:null, name:file.name, format:"nppro"});
       updateFileBadge(); updateStats(); renderDocList(); renderDocMeta();
-      toast("⚡ Открыт: " + file.name);
-      return;
+      toast("⚡ Открыт: " + file.name); return;
     }
     if(ext === "json"){
       try{
@@ -1474,26 +1396,19 @@ function importFile(file){
         if(j && Array.isArray(j.documents) && j.documents.length){
           if(!confirm("Резервная копия с " + j.documents.length + " документами. Заменить?")) return;
           docs = j.documents; activeId = docs[0].id;
-          persist(); openDoc(activeId);
-          toast("Резервная копия восстановлена");
-          return;
+          persist(); openDoc(activeId); toast("Резервная копия восстановлена"); return;
         }
       }catch(err){}
     }
     var html;
-    if(ext === "html" || ext === "htm"){
-      html = sanitizeHTML(content) || ("<p>" + escapeHTML(content).replace(/\n/g,"<br>") + "</p>");
-    } else if(ext === "md" || ext === "markdown"){
-      html = markdownToHTML(content);
-    } else {
-      html = content.split(/\n{2,}/).map(function(p){ return "<p>" + escapeHTML(p).replace(/\n/g,"<br>") + "</p>"; }).join("");
-    }
+    if(ext === "html" || ext === "htm") html = sanitizeHTML(content) || ("<p>" + escapeHTML(content).replace(/\n/g,"<br>") + "</p>");
+    else if(ext === "md" || ext === "markdown") html = markdownToHTML(content);
+    else html = content.split(/\n{2,}/).map(function(p){ return "<p>" + escapeHTML(p).replace(/\n/g,"<br>") + "</p>"; }).join("");
     var baseName = file.name.replace(/\.[^.]+$/, "");
     createDoc(baseName, html);
     var d = currentDoc();
     if(d){
-      activeFileName = file.name;
-      activeFileFormat = formatFromFilename(file.name);
+      activeFileName = file.name; activeFileFormat = formatFromFilename(file.name);
       docFiles.set(d.id, {handle:null, name:file.name, format:activeFileFormat});
       updateFileBadge(); renderDocList();
     }
@@ -1503,17 +1418,14 @@ function importFile(file){
   r.readAsText(file, "utf-8");
 }
 
-/* ============ ЭКСПОРТ ============ */
 function doExport(kind){
   if(kind === "pdf"){ doPrint(); return; }
   var name = safeFileName();
   var info = getContentForFormat(kind);
-  // Если есть Python-мост — сохраняем через нативный диалог
   if(HAS_PYWEBVIEW && window.pywebview && window.pywebview.api){
     var payload = info.content;
     if(payload instanceof Uint8Array){
-      var bin = "";
-      var CHUNK = 0x8000;
+      var bin = ""; var CHUNK = 0x8000;
       for(var i = 0; i < payload.length; i += CHUNK){
         var slice = payload.subarray(i, i + CHUNK);
         bin += String.fromCharCode.apply(null, slice);
@@ -1530,7 +1442,7 @@ function doExport(kind){
   toast("💾 Файл скачан: " + name + "." + info.ext);
 }
 
-/* ============ FOCUS STUDIO ============ */
+/* FOCUS STUDIO */
 var pomo = {work:25, rest:5, remaining:25*60, mode:"work", running:false, timer:null};
 function pomoRender(){
   var m = Math.floor(pomo.remaining / 60);
@@ -1545,10 +1457,8 @@ function pomoBeep(){
   try{
     var ctx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
     audioCtx = ctx;
-    var o = ctx.createOscillator();
-    var g = ctx.createGain();
-    o.type = "sine"; o.frequency.value = 880;
-    g.gain.value = 0.001;
+    var o = ctx.createOscillator(); var g = ctx.createGain();
+    o.type = "sine"; o.frequency.value = 880; g.gain.value = 0.001;
     o.connect(g); g.connect(ctx.destination);
     var t = ctx.currentTime;
     g.gain.exponentialRampToValueAtTime(0.25, t + 0.02);
@@ -1629,26 +1539,21 @@ function stopSound(){
     try{ if(n.stop) n.stop(); }catch(e){}
     try{ if(n.disconnect) n.disconnect(); }catch(e){}
   });
-  currentSoundNodes = [];
-  currentSound = null;
+  currentSoundNodes = []; currentSound = null;
   $$("#soundGrid button").forEach(function(b){ b.classList.remove("active"); });
 }
 function playSound(kind){
-  ensureAudio();
-  stopSound();
+  ensureAudio(); stopSound();
   if(kind === "none") return;
   var src = audioCtx.createBufferSource();
   var btype = (kind === "brown" || kind === "ocean" || kind === "rain") ? "brown" : "white";
-  src.buffer = makeNoiseBuffer(btype);
-  src.loop = true;
-  var gain = audioCtx.createGain();
-  gain.gain.value = 0.8;
+  src.buffer = makeNoiseBuffer(btype); src.loop = true;
+  var gain = audioCtx.createGain(); gain.gain.value = 0.8;
   var chain = [src];
   if(kind === "rain"){
     var hp = audioCtx.createBiquadFilter(); hp.type = "highpass"; hp.frequency.value = 900;
     var lp = audioCtx.createBiquadFilter(); lp.type = "lowpass"; lp.frequency.value = 6000;
-    src.connect(hp); hp.connect(lp); lp.connect(gain);
-    chain.push(hp, lp);
+    src.connect(hp); hp.connect(lp); lp.connect(gain); chain.push(hp, lp);
   } else if(kind === "cafe"){
     var bp = audioCtx.createBiquadFilter(); bp.type = "bandpass"; bp.frequency.value = 800; bp.Q.value = 0.5;
     src.connect(bp); bp.connect(gain); chain.push(bp);
@@ -1667,11 +1572,8 @@ function playSound(kind){
     var lp3 = audioCtx.createBiquadFilter(); lp3.type = "lowpass"; lp3.frequency.value = 1200;
     src.connect(lp3); lp3.connect(gain); chain.push(lp3);
   }
-  gain.connect(masterGain);
-  chain.push(gain);
-  src.start();
-  currentSoundNodes = chain;
-  currentSound = kind;
+  gain.connect(masterGain); chain.push(gain); src.start();
+  currentSoundNodes = chain; currentSound = kind;
   $$("#soundGrid button").forEach(function(b){
     if(b.dataset.sound === kind) b.classList.add("active"); else b.classList.remove("active");
   });
@@ -1690,8 +1592,7 @@ function ttsPlay(){
   var voices = window.speechSynthesis.getVoices();
   var ru = voices.filter(function(v){ return /^ru/i.test(v.lang); })[0];
   if(ru) u.voice = ru;
-  u.onend = function(){ $("#ttsPlay").classList.remove("active"); ttsUtterance = null; };
-  u.onerror = function(){ $("#ttsPlay").classList.remove("active"); ttsUtterance = null; };
+  u.onend = u.onerror = function(){ $("#ttsPlay").classList.remove("active"); ttsUtterance = null; };
   ttsUtterance = u;
   $("#ttsPlay").classList.add("active");
   window.speechSynthesis.speak(u);
@@ -1702,13 +1603,11 @@ function ttsStop(){
   ttsUtterance = null;
 }
 
-/* ============ ПОИСК ============ */
 var matches = [], matchIndex = -1;
 function collectMatches(){
   var query = $("#findInput").value;
   var cs = $("#caseSensitive").checked;
-  matches = [];
-  matchIndex = -1;
+  matches = []; matchIndex = -1;
   if(!query){ updateFindCounter(); return; }
   var needle = cs ? query : query.toLowerCase();
   var walker = document.createTreeWalker(editor, NodeFilter.SHOW_TEXT, null);
@@ -1719,8 +1618,7 @@ function collectMatches(){
     while((idx = hay.indexOf(needle, idx)) !== -1){
       try{
         var r = document.createRange();
-        r.setStart(node, idx);
-        r.setEnd(node, idx + query.length);
+        r.setStart(node, idx); r.setEnd(node, idx + query.length);
         matches.push(r);
       }catch(e){}
       idx += needle.length;
@@ -1728,30 +1626,24 @@ function collectMatches(){
   }
   updateFindCounter();
 }
-function updateFindCounter(){
-  $("#findCounter").textContent = matches.length ? (matchIndex + 1) + " / " + matches.length : "0 / 0";
-}
+function updateFindCounter(){ $("#findCounter").textContent = matches.length ? (matchIndex + 1) + " / " + matches.length : "0 / 0"; }
 function goToMatch(i){
   if(!matches.length) return;
   matchIndex = (i + matches.length) % matches.length;
   var r = matches[matchIndex];
   var sel = window.getSelection();
-  sel.removeAllRanges();
-  sel.addRange(r);
+  sel.removeAllRanges(); sel.addRange(r);
   var rect = r.getBoundingClientRect();
   var wrap = $("#pageWrap");
   var wr = wrap.getBoundingClientRect();
-  if(rect.top < wr.top + 80 || rect.bottom > wr.bottom - 80){
-    wrap.scrollTop += rect.top - wr.top - wr.height / 2;
-  }
+  if(rect.top < wr.top + 80 || rect.bottom > wr.bottom - 80) wrap.scrollTop += rect.top - wr.top - wr.height / 2;
   updateFindCounter();
 }
 function openFind(){
   $("#findBar").hidden = false;
   var sel = window.getSelection();
   if(sel && !sel.isCollapsed && editor.contains(sel.anchorNode)) $("#findInput").value = sel.toString().slice(0, 100);
-  $("#findInput").focus();
-  $("#findInput").select();
+  $("#findInput").focus(); $("#findInput").select();
   collectMatches();
 }
 function replaceCurrent(){
@@ -1761,12 +1653,8 @@ function replaceCurrent(){
   r.deleteContents();
   var tn = document.createTextNode(text);
   r.insertNode(tn);
-  var nr = document.createRange();
-  nr.setStartAfter(tn);
-  nr.collapse(true);
-  var sel = window.getSelection();
-  sel.removeAllRanges();
-  sel.addRange(nr);
+  var nr = document.createRange(); nr.setStartAfter(tn); nr.collapse(true);
+  var sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(nr);
   updateStats(); scheduleSave(); collectMatches();
   if(matches.length) goToMatch(Math.min(matchIndex, matches.length - 1));
 }
@@ -1778,15 +1666,13 @@ function replaceAll(){
   var needle = cs ? q : q.toLowerCase();
   var count = 0;
   var walker = document.createTreeWalker(editor, NodeFilter.SHOW_TEXT, null);
-  var nodes = [];
-  var n;
+  var nodes = []; var n;
   while((n = walker.nextNode())) nodes.push(n);
   nodes.forEach(function(node){
     var val = node.nodeValue;
     var hay = cs ? val : val.toLowerCase();
     if(hay.indexOf(needle) === -1) return;
-    var result = "";
-    var i = 0;
+    var result = ""; var i = 0;
     while(true){
       var idx = hay.indexOf(needle, i);
       if(idx === -1){ result += val.slice(i); break; }
@@ -1800,11 +1686,8 @@ function replaceAll(){
   else toast("Совпадений не найдено");
 }
 
-/* ============ МЕНЮ ============ */
 var openMenuEl = null;
-function closeAllMenus(){
-  if(openMenuEl){ openMenuEl.remove(); openMenuEl = null; }
-}
+function closeAllMenus(){ if(openMenuEl){ openMenuEl.remove(); openMenuEl = null; } }
 document.addEventListener("click", closeAllMenus);
 
 function buildThemeMenu(){
@@ -1827,9 +1710,9 @@ function buildExportMenu(){
     '<button data-act="saveas">💾 Сохранить как… (Ctrl+Shift+S)</button>' +
     "<hr>" +
     '<div class="menu-label">Экспорт в форматах</div>' +
-    '<button data-act="docx">📘 Word (.docx) — настоящий</button>' +
-    '<button data-act="pdf">📕 PDF (.pdf) — через печать</button>' +
-    '<button data-act="nppro">⚡ Nitpad Pro (.nppro) — родной</button>' +
+    '<button data-act="docx">📘 Word (.docx)</button>' +
+    '<button data-act="pdf">📕 PDF — через печать</button>' +
+    '<button data-act="nppro">⚡ Nitpad Pro (.nppro)</button>' +
     '<button data-act="html">🌐 HTML (.html)</button>' +
     '<button data-act="md">📝 Markdown (.md)</button>' +
     '<button data-act="txt">📄 Текст (.txt)</button>' +
@@ -1838,32 +1721,39 @@ function buildExportMenu(){
   return menu;
 }
 
-/* ============ ЗУМ ============ */
 function applyZoom(){
   editor.style.fontSize = (16 * zoom / 100).toFixed(2) + "px";
   $("#zoomLabel").textContent = zoom + "%";
 }
 
-/* ============ ИНИЦИАЛИЗАЦИЯ ============ */
+/* ============ МОБИЛЬНАЯ ЛОГИКА: сайдбар как overlay ============ */
+function toggleSidebarMobile(force){
+  var isOpen = app.classList.contains("sidebar-open");
+  var willOpen = (force === undefined) ? !isOpen : force;
+  if(willOpen) app.classList.add("sidebar-open");
+  else app.classList.remove("sidebar-open");
+}
+function closeSidebarMobile(){ app.classList.remove("sidebar-open"); }
+
 function init(){
-  // Перепроверяем флаг — вдруг pywebview появился после DOMContentLoaded
-  if(typeof window.pywebview !== 'undefined' && window.pywebview.api){
-    HAS_PYWEBVIEW = true;
-  }
-  console.log('[Nitpad Pro] Режим:', HAS_PYWEBVIEW ? 'Desktop (pywebview)' : (HAS_FS ? 'Браузер (File System API)' : 'Браузер (download)'));
+  if(typeof window.pywebview !== 'undefined' && window.pywebview.api) HAS_PYWEBVIEW = true;
+  console.log('[Nitpad Pro] Режим:', HAS_PYWEBVIEW ? 'Desktop (pywebview)' : (HAS_FS ? 'Browser (FS API)' : 'Browser (download)'), IS_MOBILE ? '[mobile]' : '[desktop]');
 
   var saved = "light";
   try{ saved = localStorage.getItem("nitpad.theme") || "light"; }catch(e){}
   setTheme(saved);
 
-  loadState();
-  openDoc(activeId);
-  updateStorageInfo();
-  renderDocList();
-  initFontSizes();
-  applyZoom();
+  loadState(); openDoc(activeId); updateStorageInfo(); renderDocList(); initFontSizes(); applyZoom();
 
-  $("#sidebarToggle").addEventListener("click", function(){ app.classList.toggle("no-sidebar"); });
+  /* --- Сайдбар: на десктопе — toggle .no-sidebar, на мобилке — overlay --- */
+  $("#sidebarToggle").addEventListener("click", function(){
+    if(IS_MOBILE) toggleSidebarMobile();
+    else app.classList.toggle("no-sidebar");
+  });
+  $("#sidebarBackdrop").addEventListener("click", closeSidebarMobile);
+  /* Клик по документу на мобилке закрывает сайдбар */
+  $("#docList").addEventListener("click", function(){ if(IS_MOBILE) closeSidebarMobile(); });
+
   $("#focusBtn").addEventListener("click", function(){
     app.classList.toggle("focus");
     toast(app.classList.contains("focus") ? "Режим фокусировки (Esc — выход)" : "Обычный режим");
@@ -1889,22 +1779,17 @@ function init(){
   $("#foreColor").addEventListener("input", function(e){ exec("foreColor", e.target.value); });
   $("#hiliteColor").addEventListener("input", function(e){ exec("hiliteColor", e.target.value); });
   $("#clearFormat").addEventListener("click", function(){
-    exec("removeFormat");
-    exec("formatBlock", "<p>");
+    exec("removeFormat"); exec("formatBlock", "<p>");
     toast("Форматирование очищено");
   });
   $("#addLink").addEventListener("click", addLink);
-
-  // Изображение: через Python-мост или обычный input
   $("#addImage").addEventListener("click", function(){
     if(HAS_PYWEBVIEW && window.pywebview && window.pywebview.api && window.pywebview.api.pick_image){
       window.pywebview.api.pick_image().then(function(res){
         if(res && res.status === "ok"){
           insertHTML('<img src="' + res.dataUrl + '" alt="' + escapeHTML(res.name) + '">');
           toast("Изображение вставлено");
-        } else if(res && res.status === "error"){
-          toast("Ошибка: " + res.message);
-        }
+        } else if(res && res.status === "error") toast("Ошибка: " + res.message);
       });
       return;
     }
@@ -1929,8 +1814,9 @@ function init(){
     if(openMenuEl){ closeAllMenus(); return; }
     var menu = buildExportMenu();
     var rect = e.currentTarget.getBoundingClientRect();
+    var left = Math.max(8, Math.min(window.innerWidth - 300, rect.right - 300));
     menu.style.top = (rect.bottom + 6) + "px";
-    menu.style.left = Math.max(8, rect.right - 300) + "px";
+    menu.style.left = left + "px";
     document.body.appendChild(menu);
     openMenuEl = menu;
     menu.querySelectorAll("[data-act]").forEach(function(b){
@@ -1949,15 +1835,15 @@ function init(){
     if(openMenuEl){ closeAllMenus(); return; }
     var menu = buildThemeMenu();
     var rect = e.currentTarget.getBoundingClientRect();
+    var left = Math.max(8, Math.min(window.innerWidth - 260, rect.right - 260));
     menu.style.top = (rect.bottom + 6) + "px";
-    menu.style.left = Math.max(8, rect.right - 260) + "px";
+    menu.style.left = left + "px";
     document.body.appendChild(menu);
     openMenuEl = menu;
     menu.querySelectorAll("[data-theme]").forEach(function(b){
       b.addEventListener("click", function(ev){
         ev.stopPropagation();
-        setTheme(b.dataset.theme);
-        closeAllMenus();
+        setTheme(b.dataset.theme); closeAllMenus();
         toast("Тема: " + b.textContent.trim());
       });
     });
@@ -1976,7 +1862,7 @@ function init(){
     if(e.key === "Escape"){ $("#findBar").hidden = true; editor.focus(); }
   });
 
-  $("#newDocBtn").addEventListener("click", function(){ createDoc(); });
+  $("#newDocBtn").addEventListener("click", function(){ createDoc(); if(IS_MOBILE) closeSidebarMobile(); });
   $("#docSearch").addEventListener("input", renderDocList);
   $("#docList").addEventListener("click", function(e){
     var del = e.target.closest("[data-del]");
@@ -2016,8 +1902,7 @@ function init(){
   $("#pomoReset").addEventListener("click", pomoReset);
   $$(".pomo-presets button").forEach(function(b){
     b.addEventListener("click", function(){
-      pomo.work = +b.dataset.work;
-      pomo.rest = +b.dataset.break;
+      pomo.work = +b.dataset.work; pomo.rest = +b.dataset.break;
       $$(".pomo-presets button").forEach(function(x){ x.classList.remove("active"); });
       b.classList.add("active");
       pomoReset();
@@ -2054,6 +1939,7 @@ function init(){
       if(app.classList.contains("focus")) app.classList.remove("focus");
       if(!$("#findBar").hidden) $("#findBar").hidden = true;
       if(!$("#focusStudio").hidden) $("#focusStudio").hidden = true;
+      closeSidebarMobile();
       closeAllMenus();
       return;
     }
@@ -2068,7 +1954,27 @@ function init(){
     if(ctrl && e.key.toLowerCase() === "u"){ e.preventDefault(); exec("underline"); }
   });
 
-  window.addEventListener("beforeunload", saveNow);
+  /* На мобильном — предупреждение о несохранённом */
+  window.addEventListener("beforeunload", function(e){
+    saveNow();
+  });
+
+  /* Автозакрытие сайдбара при переходе на десктопную ширину */
+  var mq = window.matchMedia("(max-width:820px)");
+  function handleMQ(){
+    IS_MOBILE = mq.matches;
+    if(!IS_MOBILE){
+      closeSidebarMobile();
+    } else {
+      /* Сразу при переключении на мобильный — сайдбар закрыт */
+      app.classList.remove("no-sidebar");
+    }
+  }
+  if(mq.addEventListener) mq.addEventListener("change", handleMQ);
+  else if(mq.addListener) mq.addListener(handleMQ);
+
+  /* Стартовая раскладка для мобильных: сайдбар закрыт */
+  if(IS_MOBILE) closeSidebarMobile();
 
   editor.focus();
   updateStats();
