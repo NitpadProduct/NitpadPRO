@@ -2,8 +2,31 @@
 <html lang="ru" data-theme="light">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+
+<!-- ============ PWA / iPhone / Android ============ -->
 <title>Nitpad Pro</title>
+<meta name="description" content="Nitpad Pro — умный блокнот с темами, Focus Studio и экспортом в Word">
+<meta name="theme-color" content="#2563eb">
+
+<!-- iOS -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Nitpad">
+<link rel="apple-touch-icon" href="./icon.png">
+<link rel="apple-touch-icon" sizes="120x120" href="./icon.png">
+<link rel="apple-touch-icon" sizes="152x152" href="./icon.png">
+<link rel="apple-touch-icon" sizes="167x167" href="./icon.png">
+<link rel="apple-touch-icon" sizes="180x180" href="./icon.png">
+
+<!-- Android / общий PWA -->
+<link rel="icon" type="image/png" sizes="32x32" href="./icon.png">
+<link rel="icon" type="image/png" sizes="192x192" href="./icon.png">
+<link rel="icon" type="image/png" sizes="512x512" href="./icon.png">
+<link rel="manifest" href="./manifest.json">
+<!-- ================================================== -->
+
 <style>
 :root,[data-theme="light"]{--bg:#eef1f5;--panel:#fff;--text:#1a1d21;--muted:#6b7280;--border:#e0e4ea;--accent:#4f46e5;--accent-soft:#eef2ff;--editor-bg:#fff;--code-bg:#f2f4f8;--shadow:0 2px 10px rgba(20,25,40,.07)}
 [data-theme="dark"]{--bg:#111317;--panel:#1a1d22;--text:#e7e9ee;--muted:#98a0ad;--border:#2a2f38;--accent:#8b8bff;--accent-soft:#232838;--editor-bg:#1a1d22;--code-bg:#22262e;--shadow:0 2px 14px rgba(0,0,0,.4)}
@@ -16,10 +39,10 @@
 [data-theme="monokai"]{--bg:#1e1f1c;--panel:#272822;--text:#f8f8f2;--muted:#a6a28c;--border:#3b3d35;--accent:#a6e22e;--accent-soft:#33352c;--editor-bg:#272822;--code-bg:#2f312a}
 *{box-sizing:border-box}
 html,body{height:100%;margin:0}
-body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;background:var(--bg);color:var(--text);overflow:hidden;font-size:14px;transition:background .25s,color .25s}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;background:var(--bg);color:var(--text);overflow:hidden;font-size:14px;transition:background .25s,color .25s;-webkit-tap-highlight-color:transparent;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
 [hidden]{display:none!important}
 button,input,select{font-family:inherit;color:inherit}
-.app{display:grid;height:100vh;grid-template-areas:"tb tb" "sb mn" "st st";grid-template-columns:270px 1fr;grid-template-rows:auto 1fr auto;transition:grid-template-columns .2s}
+.app{display:grid;height:100vh;height:100dvh;grid-template-areas:"tb tb" "sb mn" "st st";grid-template-columns:270px 1fr;grid-template-rows:auto 1fr auto;transition:grid-template-columns .2s}
 .app.no-sidebar{grid-template-columns:0 1fr}
 .app.no-sidebar .sidebar{display:none}
 .app.focus{grid-template-areas:"mn";grid-template-columns:1fr;grid-template-rows:1fr}
@@ -97,7 +120,7 @@ label.color span{font-weight:700;border-bottom:3px solid var(--c,#000);line-heig
 .findbar button{border:1px solid var(--border);background:transparent;border-radius:8px;padding:7px 10px;cursor:pointer;font-size:12.5px;white-space:nowrap}
 .findbar .counter{font-size:11.5px;color:var(--muted);white-space:nowrap;min-width:46px;text-align:center}
 .findbar label{font-size:11.5px;color:var(--muted);display:flex;align-items:center;gap:4px;white-space:nowrap;cursor:pointer}
-.focus-studio{position:fixed;top:0;right:0;bottom:0;width:320px;z-index:70;background:var(--panel);border-left:1px solid var(--border);box-shadow:-8px 0 30px rgba(0,0,0,.18);display:flex;flex-direction:column;overflow-y:auto}
+.focus-studio{position:fixed;top:0;right:0;bottom:0;width:320px;z-index:70;background:var(--panel);border-left:1px solid var(--border);box-shadow:-8px 0 30px rgba(0,0,0,.18);display:flex;flex-direction:column;overflow-y:auto;padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom)}
 .fs-head{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--panel);z-index:2}
 .fs-head strong{font-size:14px}
 .fs-head button{border:none;background:transparent;font-size:16px;cursor:pointer;color:var(--muted);padding:4px 8px;border-radius:6px}
@@ -148,7 +171,7 @@ label.color span{font-weight:700;border-bottom:3px solid var(--c,#000);line-heig
 }
 @media (max-width:820px){
   .app{grid-template-columns:0 1fr}
-  .app:not(.no-sidebar) .sidebar{position:fixed;top:0;bottom:0;left:0;width:280px;z-index:50;box-shadow:var(--shadow)}
+  .app:not(.no-sidebar) .sidebar{position:fixed;top:0;bottom:0;left:0;width:280px;z-index:50;box-shadow:var(--shadow);padding-top:env(safe-area-inset-top)}
   .page{padding:28px 20px}
   .page-wrap{padding:14px 8px 60px}
   .findbar{width:calc(100% - 20px);right:10px}
