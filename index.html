@@ -101,6 +101,8 @@ label.color span{font-weight:700;border-bottom:3px solid var(--c,#000);line-heig
 .statusbar b{color:var(--text);font-weight:600}
 .saved-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:#22c55e;margin-right:5px}
 .saved-dot.dirty{background:#f59e0b}
+.version-badge{font-size:10.5px;padding:2px 8px;border-radius:20px;background:var(--accent-soft);color:var(--accent);font-weight:600;letter-spacing:.02em;white-space:nowrap;flex-shrink:0;cursor:pointer;border:1px solid transparent;transition:border-color .15s}
+.version-badge:hover{border-color:var(--accent)}
 .zoom-ctrl{display:flex;align-items:center;gap:4px;flex-shrink:0}
 .zoom-ctrl button{border:1px solid var(--border);background:transparent;border-radius:6px;width:22px;height:20px;cursor:pointer;font-size:13px;color:var(--text)}
 .zoom-ctrl button:hover{background:var(--accent-soft)}
@@ -144,10 +146,35 @@ label.color span{font-weight:700;border-bottom:3px solid var(--c,#000);line-heig
 .menu-label{font-size:10.5px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;padding:6px 12px 4px}
 #toast{position:fixed;bottom:48px;left:50%;transform:translate(-50%,20px);z-index:100;background:#1f2430;color:#fff;padding:11px 18px;border-radius:10px;font-size:13px;opacity:0;pointer-events:none;transition:.28s;box-shadow:0 6px 24px rgba(0,0,0,.3);max-width:90vw;text-align:center}
 #toast.show{opacity:1;transform:translate(-50%,0)}
+
+/* ============ WELCOME MODAL ============ */
+.welcome-modal{position:fixed;inset:0;z-index:200;background:rgba(15,18,25,.75);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;padding:20px;animation:wmFade .3s ease}
+@keyframes wmFade{from{opacity:0}to{opacity:1}}
+.wm-card{background:var(--panel);border-radius:20px;box-shadow:0 24px 80px rgba(0,0,0,.5);max-width:560px;width:100%;padding:32px 28px 24px;text-align:center;animation:wmSlide .35s cubic-bezier(.2,.9,.3,1.2);max-height:92vh;overflow-y:auto}
+@keyframes wmSlide{from{transform:translateY(30px) scale(.95);opacity:0}to{transform:translateY(0) scale(1);opacity:1}}
+.wm-icon{font-size:56px;line-height:1;margin-bottom:8px;filter:drop-shadow(0 6px 20px rgba(79,70,229,.4))}
+.wm-title{margin:0 0 4px;font-size:26px;font-weight:800;letter-spacing:-.02em}
+.wm-title span{color:var(--accent)}
+.wm-sub{margin:0 0 24px;font-size:14px;color:var(--muted)}
+.wm-options{display:grid;grid-template-columns:1fr;gap:10px;margin-bottom:20px}
+@media (min-width:520px){.wm-options{grid-template-columns:repeat(3,1fr)}}
+.wm-opt{display:flex;flex-direction:column;align-items:center;gap:6px;padding:18px 12px;border:2px solid var(--border);background:var(--bg);border-radius:14px;cursor:pointer;text-align:center;transition:all .18s;font-family:inherit;color:var(--text)}
+.wm-opt:hover{border-color:var(--accent);background:var(--accent-soft);transform:translateY(-2px)}
+.wm-opt:active{transform:translateY(0) scale(.98)}
+.wm-opt-icon{font-size:32px;line-height:1}
+.wm-opt-name{font-size:15px;font-weight:700}
+.wm-opt-hint{font-size:11.5px;color:var(--muted);line-height:1.3}
+.wm-opt.current{border-color:var(--accent);background:var(--accent-soft)}
+.wm-opt.current .wm-opt-name{color:var(--accent)}
+.wm-remember{display:inline-flex;align-items:center;gap:8px;font-size:13px;color:var(--muted);cursor:pointer;user-select:none;padding:6px 10px;border-radius:8px;margin-bottom:8px}
+.wm-remember:hover{background:var(--accent-soft)}
+.wm-remember input{width:16px;height:16px;accent-color:var(--accent);cursor:pointer}
+.wm-foot{font-size:11px;color:var(--muted);opacity:.7;margin-top:4px}
+
 @media print{
   html,body{background:#fff!important;color:#000!important;overflow:visible!important;height:auto!important}
   .app{display:block!important;height:auto!important}
-  .toolbar,.sidebar,.statusbar,.doc-head,.findbar,.menu,#toast,.focus-studio,.file-badge,.sidebar-backdrop{display:none!important}
+  .toolbar,.sidebar,.statusbar,.doc-head,.findbar,.menu,#toast,.focus-studio,.file-badge,.sidebar-backdrop,.version-badge,.welcome-modal{display:none!important}
   .main{display:block!important;overflow:visible!important}
   .page-wrap{overflow:visible!important;padding:0!important}
   .page{box-shadow:none!important;padding:0!important;max-width:none!important;border-radius:0!important;background:#fff!important;min-height:0!important}
@@ -161,23 +188,13 @@ label.color span{font-weight:700;border-bottom:3px solid var(--c,#000);line-heig
 }
 
 /* ============================================================
-   МОБИЛЬНАЯ ВЕРСИЯ (≤ 820px) — компактный тулбар, overlay-сайдбар,
-   крупные кнопки, safe-area, без случайного зума по двойному тапу
+   МОБИЛЬНАЯ РАСКЛАДКА (≤ 820px)
    ============================================================ */
 @media (max-width:820px){
   body{font-size:14.5px}
   html{-webkit-text-size-adjust:100%}
-
   .app{grid-template-columns:0 1fr}
-
-  /* --- Тулбар: одна строка с горизонтальным скроллом, кнопки крупнее --- */
-  .toolbar{
-    padding:5px 6px;gap:0;
-    overflow-x:auto;overflow-y:hidden;
-    -webkit-overflow-scrolling:touch;
-    scrollbar-width:none;
-    scroll-snap-type:x proximity;
-  }
+  .toolbar{padding:5px 6px;gap:0;overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;scrollbar-width:none;scroll-snap-type:x proximity}
   .toolbar::-webkit-scrollbar{display:none}
   .brand{font-size:13px;padding-right:8px;margin-right:2px;gap:4px}
   .brand span sup{display:none}
@@ -186,43 +203,19 @@ label.color span{font-weight:700;border-bottom:3px solid var(--c,#000);line-heig
   .group+.group{border-left:1px solid var(--border);padding-left:6px;margin-left:3px}
   .tb{height:42px;min-width:42px;padding:0 9px;font-size:16px;border-radius:9px}
   .tb.icon{font-size:18px}
-  .tb.b,.tb.i,.tb.u,.tb.s{font-size:15px}
-  select.tb{height:40px;font-size:14px;max-width:120px;padding:0 6px}
-
-  /* --- Сайдбар как overlay --- */
-  .app .sidebar{
-    position:fixed;top:0;left:0;bottom:0;
-    width:82vw;max-width:320px;
-    z-index:80;
-    transform:translateX(-102%);
-    transition:transform .24s cubic-bezier(.4,0,.2,1);
-    box-shadow:8px 0 32px rgba(0,0,0,.28);
-    padding-top:env(safe-area-inset-top);
-    padding-bottom:env(safe-area-inset-bottom);
-    border-right:none;
-  }
+  select.tb{height:40px;font-size:14px;max-width:120px}
+  .app .sidebar{position:fixed;top:0;left:0;bottom:0;width:82vw;max-width:320px;z-index:80;transform:translateX(-102%);transition:transform .24s cubic-bezier(.4,0,.2,1);box-shadow:8px 0 32px rgba(0,0,0,.28);padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom);border-right:none}
   .app.sidebar-open .sidebar{transform:translateX(0)}
-  .app.no-sidebar .sidebar{display:flex} /* на мобилке no-sidebar не работает — используем .sidebar-open */
-  .sidebar-backdrop{
-    display:block;
-    position:fixed;inset:0;
-    background:rgba(0,0,0,.45);
-    z-index:75;
-    opacity:0;pointer-events:none;
-    transition:opacity .2s;
-    -webkit-backdrop-filter:blur(2px);
-    backdrop-filter:blur(2px);
-  }
+  .app.no-sidebar .sidebar{display:flex}
+  .sidebar-backdrop{display:block;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:75;opacity:0;pointer-events:none;transition:opacity .2s}
   .app.sidebar-open .sidebar-backdrop{opacity:1;pointer-events:auto}
   .sidebar-head{padding:14px 12px}
   .btn-primary{padding:12px;font-size:14px}
   .search{padding:10px 12px;font-size:14px}
-  .doc-item{padding:12px 12px;border-radius:11px}
+  .doc-item{padding:12px;border-radius:11px}
   .doc-item-title{font-size:14px}
   .doc-item-sub{font-size:12px}
   .doc-del{opacity:.7;font-size:15px;padding:6px 8px}
-
-  /* --- Главная область --- */
   .doc-head{padding:6px 14px}
   .doc-title{font-size:16px;padding:8px 0}
   .doc-meta{display:none}
@@ -230,26 +223,77 @@ label.color span{font-weight:700;border-bottom:3px solid var(--c,#000);line-heig
   .page-wrap{padding:10px 6px 60px}
   .page{padding:22px 16px 32px;border-radius:10px;min-height:calc(100% - 4px)}
   #editor{font-size:16px;line-height:1.7}
-
-  /* --- Статусбар: компактный --- */
   .statusbar{padding:4px 12px;gap:10px;font-size:11px}
-  .statusbar>span:nth-child(n+4):not(.spacer):not(.zoom-ctrl){display:none} /* Скрываем часть статистики */
+  .statusbar>span:nth-child(n+5):not(.spacer):not(.zoom-ctrl):not(.version-badge){display:none}
   .zoom-ctrl{display:none}
-
-  /* --- Поиск: full width --- */
+  .version-badge{font-size:10px;padding:2px 6px}
   .findbar{width:calc(100% - 16px);right:8px;top:8px;padding:12px}
   .findbar input[type=text]{font-size:15px;padding:9px 11px}
   .findbar button{padding:9px 12px;font-size:13px}
-
-  /* --- Focus Studio: почти full screen --- */
   .focus-studio{width:100%;max-width:400px;box-shadow:-8px 0 40px rgba(0,0,0,.35)}
-
-  /* --- Меню: не вылезает за экран --- */
   .menu{min-width:260px;max-width:calc(100vw - 20px)}
-
-  /* --- Меню/тосты учитывают safe-area --- */
   #toast{bottom:calc(60px + env(safe-area-inset-bottom))}
+  .wm-card{padding:24px 20px 20px;border-radius:16px}
+  .wm-title{font-size:22px}
+  .wm-icon{font-size:48px}
+  .wm-opt{padding:16px 10px}
+
+  /* force-desktop отключает всё выше */
+  html.force-desktop body{font-size:14px}
+  html.force-desktop .app{grid-template-columns:270px 1fr}
+  html.force-desktop .toolbar{padding:6px 10px}
+  html.force-desktop .tb{height:32px;min-width:32px;font-size:14px;padding:0 8px}
+  html.force-desktop .tb.icon{font-size:15px}
+  html.force-desktop select.tb{height:30px;font-size:13px;max-width:150px}
+  html.force-desktop .brand span sup{display:inline}
+  html.force-desktop .brand span::after{content:none}
+  html.force-desktop .app .sidebar{position:relative;width:auto;max-width:none;transform:none;box-shadow:none;border-right:1px solid var(--border);padding:0}
+  html.force-desktop .sidebar-backdrop{display:none!important}
+  html.force-desktop .page{padding:56px 68px;border-radius:6px;box-shadow:var(--shadow);min-height:calc(100% - 10px)}
+  html.force-desktop .page-wrap{padding:26px 20px 80px}
+  html.force-desktop .doc-head{padding:8px 20px}
+  html.force-desktop .doc-title{font-size:15px}
+  html.force-desktop .doc-meta{display:block}
+  html.force-desktop .statusbar{padding:5px 16px;gap:16px;font-size:11.5px}
+  html.force-desktop .statusbar>span{display:inline}
+  html.force-desktop .zoom-ctrl{display:flex}
+  html.force-desktop #editor{font-size:16px}
 }
+
+/* ============================================================
+   ПРИНУДИТЕЛЬНАЯ МОБИЛЬНАЯ РАСКЛАДКА (html.force-mobile)
+   Применяется всегда, даже на широком экране.
+   ============================================================ */
+html.force-mobile body{font-size:14.5px}
+html.force-mobile .app{grid-template-columns:0 1fr}
+html.force-mobile .app.no-sidebar .sidebar{display:flex}
+html.force-mobile .toolbar{padding:5px 6px;gap:0;overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+html.force-mobile .toolbar::-webkit-scrollbar{display:none}
+html.force-mobile .brand{font-size:13px;padding-right:8px;margin-right:2px;gap:4px}
+html.force-mobile .brand span sup{display:none}
+html.force-mobile .brand span::after{content:"PRO";font-size:8px;color:var(--accent);font-weight:800;margin-left:2px}
+html.force-mobile .group{padding:0 3px;border-right:none}
+html.force-mobile .group+.group{border-left:1px solid var(--border);padding-left:6px;margin-left:3px}
+html.force-mobile .tb{height:42px;min-width:42px;padding:0 9px;font-size:16px;border-radius:9px}
+html.force-mobile .tb.icon{font-size:18px}
+html.force-mobile select.tb{height:40px;font-size:14px;max-width:120px}
+html.force-mobile .app .sidebar{position:fixed;top:0;left:0;bottom:0;width:82vw;max-width:320px;z-index:80;transform:translateX(-102%);transition:transform .24s cubic-bezier(.4,0,.2,1);box-shadow:8px 0 32px rgba(0,0,0,.28);padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom);border-right:none}
+html.force-mobile .app.sidebar-open .sidebar{transform:translateX(0)}
+html.force-mobile .sidebar-backdrop{display:block;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:75;opacity:0;pointer-events:none;transition:opacity .2s}
+html.force-mobile .app.sidebar-open .sidebar-backdrop{opacity:1;pointer-events:auto}
+html.force-mobile .doc-head{padding:6px 14px}
+html.force-mobile .doc-title{font-size:16px;padding:8px 0}
+html.force-mobile .doc-meta{display:none}
+html.force-mobile .file-badge{max-width:120px;font-size:10.5px}
+html.force-mobile .page-wrap{padding:10px 6px 60px}
+html.force-mobile .page{padding:22px 16px 32px;border-radius:10px;min-height:calc(100% - 4px)}
+html.force-mobile #editor{font-size:16px;line-height:1.7}
+html.force-mobile .statusbar{padding:4px 12px;gap:10px;font-size:11px}
+html.force-mobile .statusbar>span:nth-child(n+5):not(.spacer):not(.zoom-ctrl):not(.version-badge){display:none}
+html.force-mobile .zoom-ctrl{display:none}
+html.force-mobile .version-badge{font-size:10px;padding:2px 6px}
+html.force-mobile #toast{bottom:calc(60px + env(safe-area-inset-bottom))}
+html.force-mobile .focus-studio{width:100%;max-width:400px}
 </style>
 </head>
 <body>
@@ -322,6 +366,7 @@ label.color span{font-weight:700;border-bottom:3px solid var(--c,#000);line-heig
         <button class="tb icon" id="focusStudioBtn" title="Focus Studio">🎧</button>
         <button class="tb icon" id="findBtn" title="Поиск (Ctrl+F)">🔍</button>
         <button class="tb icon" id="themeBtn" title="Тема">🎨</button>
+        <button class="tb icon" id="versionBtn" title="Версия интерфейса">🌐</button>
         <button class="tb icon" id="focusBtn" title="Фокус">⛶</button>
       </div>
       <div class="group">
@@ -372,6 +417,7 @@ label.color span{font-weight:700;border-bottom:3px solid var(--c,#000);line-heig
 
   <footer class="statusbar">
     <span><span class="saved-dot" id="savedDot"></span><span id="savedText">Сохранено</span></span>
+    <span class="version-badge" id="versionBadge" title="Клик — сменить версию">Desktop</span>
     <span>Слов: <b id="statWords">0</b></span>
     <span>Символов: <b id="statChars">0</b></span>
     <span>Без пробелов: <b id="statCharsNoSpace">0</b></span>
@@ -415,6 +461,37 @@ label.color span{font-weight:700;border-bottom:3px solid var(--c,#000);line-heig
   </div>
 </aside>
 
+<!-- ============ WELCOME MODAL ============ -->
+<div class="welcome-modal" id="welcomeModal" hidden>
+  <div class="wm-card">
+    <div class="wm-icon">⚡</div>
+    <h1 class="wm-title">Nitpad<span>PRO</span></h1>
+    <p class="wm-sub">Выберите версию интерфейса</p>
+    <div class="wm-options">
+      <button class="wm-opt" data-mode="auto">
+        <span class="wm-opt-icon">🔄</span>
+        <span class="wm-opt-name">Авто</span>
+        <span class="wm-opt-hint">По ширине экрана</span>
+      </button>
+      <button class="wm-opt" data-mode="mobile">
+        <span class="wm-opt-icon">📱</span>
+        <span class="wm-opt-name">Мобильная</span>
+        <span class="wm-opt-hint">Компактный интерфейс</span>
+      </button>
+      <button class="wm-opt" data-mode="desktop">
+        <span class="wm-opt-icon">🖥</span>
+        <span class="wm-opt-name">Компьютерная</span>
+        <span class="wm-opt-hint">Полный тулбар</span>
+      </button>
+    </div>
+    <label class="wm-remember">
+      <input type="checkbox" id="wmRemember" checked>
+      <span>Запомнить выбор</span>
+    </label>
+    <div class="wm-foot">Позже можно сменить через кнопку 🌐 в тулбаре</div>
+  </div>
+</div>
+
 <div id="toast"></div>
 <input type="file" id="fileInput" hidden accept=".txt,.md,.markdown,.html,.htm,.docx,.nppro,.json,.rtf,text/*">
 <input type="file" id="imageInput" hidden accept="image/*">
@@ -427,9 +504,74 @@ var $ = function(s){ return document.querySelector(s); };
 var $$ = function(s){ return Array.prototype.slice.call(document.querySelectorAll(s)); };
 var uid = function(){ return Date.now().toString(36) + Math.random().toString(36).slice(2,7); };
 var HAS_FS = typeof window.showSaveFilePicker === "function" && typeof window.showOpenFilePicker === "function";
-var IS_MOBILE = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || window.matchMedia("(max-width:820px)").matches;
 
-/* Определяем реальную высоту окна с учётом клавиатуры на мобилке */
+/* ============================================================
+   РЕЖИМ ИНТЕРФЕЙСА
+   ============================================================ */
+var LAYOUT_MQ = window.matchMedia("(max-width: 820px)");
+var IS_NARROW = LAYOUT_MQ.matches;
+var IS_TOUCH  = ("ontouchstart" in window) || (navigator.maxTouchPoints > 0) || (navigator.msMaxTouchPoints > 0);
+var IS_IOS    = /iPhone|iPad|iPod/i.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+
+var FORCE_MODE = "auto";
+var MODE_FROM_URL = false;
+try{ FORCE_MODE = localStorage.getItem("nitpad.forceMode") || "auto"; }catch(e){}
+if(/[?&]desktop=1/.test(location.search)){ FORCE_MODE = "desktop"; MODE_FROM_URL = true; }
+if(/[?&]mobile=1/.test(location.search)){  FORCE_MODE = "mobile";  MODE_FROM_URL = true; }
+if(/[?&]auto=1/.test(location.search)){    FORCE_MODE = "auto";    MODE_FROM_URL = true; }
+
+var HAS_SAVED_MODE = false;
+try{ HAS_SAVED_MODE = !!localStorage.getItem("nitpad.forceMode"); }catch(e){}
+
+function isMobileLayout(){
+  if(FORCE_MODE === "mobile")  return true;
+  if(FORCE_MODE === "desktop") return false;
+  return IS_NARROW;
+}
+function getVersionLabel(){
+  if(FORCE_MODE === "desktop") return "Desktop · forced";
+  if(FORCE_MODE === "mobile")  return "Mobile · forced";
+  if(IS_NARROW && IS_IOS)      return "Mobile · iOS";
+  if(IS_NARROW && IS_TOUCH)    return "Mobile · Touch";
+  if(IS_NARROW)                return "Mobile · Narrow";
+  return "Desktop";
+}
+function applyLayoutClasses(){
+  var h = document.documentElement;
+  h.classList.remove("force-desktop", "force-mobile");
+  if(FORCE_MODE === "desktop") h.classList.add("force-desktop");
+  if(FORCE_MODE === "mobile")  h.classList.add("force-mobile");
+}
+function updateVersionBadge(){
+  var b = document.getElementById("versionBadge");
+  if(b) b.textContent = getVersionLabel();
+}
+
+function setForceMode(mode, opts){
+  opts = opts || {};
+  if(["auto","mobile","desktop"].indexOf(mode) === -1) mode = "auto";
+  FORCE_MODE = mode;
+
+  if(opts.save !== false){
+    try{ localStorage.setItem("nitpad.forceMode", mode); }catch(e){}
+    HAS_SAVED_MODE = true;
+  }
+  try{ localStorage.removeItem("nitpad.forceDesktop"); }catch(e){}
+
+  applyLayoutClasses();
+  updateVersionBadge();
+
+  if(isMobileLayout()) closeSidebarMobile();
+  else { closeSidebarMobile(); app.classList.remove("no-sidebar"); }
+
+  if(!opts.silent){
+    var names = { auto:"Авто", mobile:"Мобильная", desktop:"Компьютерная" };
+    toast("🌐 Режим: " + names[mode]);
+  }
+  console.log('[Nitpad Pro] Режим →', mode, '(' + getVersionLabel() + ')');
+}
+
+/* Правильная высота под плавающую адресную строку */
 function fixViewportHeight(){
   document.documentElement.style.setProperty("--vh", window.innerHeight * 0.01 + "px");
 }
@@ -443,8 +585,8 @@ if(window.visualViewport){
 }
 
 var HAS_PYWEBVIEW = false;
-window.addEventListener('pywebviewready', function(){ HAS_PYWEBVIEW = true; });
-if(typeof window.pywebview !== 'undefined' && window.pywebview.api){ HAS_PYWEBVIEW = true; }
+window.addEventListener("pywebviewready", function(){ HAS_PYWEBVIEW = true; });
+if(typeof window.pywebview !== "undefined" && window.pywebview.api){ HAS_PYWEBVIEW = true; }
 
 function escapeHTML(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#39;"); }
 function escapeXml(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&apos;"); }
@@ -459,6 +601,7 @@ function toast(msg){
   toastTimer = setTimeout(function(){ t.classList.remove("show"); }, 2600);
 }
 
+/* ============ ТЕМЫ ============ */
 var THEMES = [
   {id:"light",name:"Светлая",accent:"#4f46e5",bg:"#ffffff"},
   {id:"dark",name:"Тёмная",accent:"#8b8bff",bg:"#111317"},
@@ -480,9 +623,13 @@ function setTheme(id){
   try{ localStorage.setItem("nitpad.theme", id); }catch(e){}
 }
 
+/* ============ ХРАНИЛИЩЕ ============ */
 var STORAGE_DOCS = "nitpad.docs.v1";
 var STORAGE_ACTIVE = "nitpad.active.v1";
-function newDocObject(title, html){ return {id:uid(), title:title||"Без названия", html:html||"", created:Date.now(), updated:Date.now()}; }
+
+function newDocObject(title, html){
+  return {id:uid(), title:title||"Без названия", html:html||"", created:Date.now(), updated:Date.now()};
+}
 
 var docs = [], activeId = null, saveTimer = null, savedRange = null, zoom = 100;
 var docFiles = new Map();
@@ -500,8 +647,9 @@ function loadState(){
       "<li><b>⚡ Nitpad Pro (.nppro)</b> — родной формат.</li>" +
       "<li><b>🎨 9 тем</b> — светлая, тёмная, Nord, Monokai и другие.</li>" +
       "<li><b>🎧 Focus Studio</b> — помодоро, фоновые звуки, чтение вслух.</li>" +
+      "<li><b>🌐 Три версии интерфейса</b> — Авто / Мобильная / Компьютерная.</li>" +
       "</ul>" +
-      "<blockquote>Работает и на компьютере, и на телефоне.</blockquote>";
+      "<blockquote>Работает и на ПК, и на телефоне. Версию можно сменить в любой момент — кнопка 🌐 в тулбаре.</blockquote>";
     docs = [newDocObject("Добро пожаловать в Nitpad Pro ⚡", welcome)];
   }
   activeId = localStorage.getItem(STORAGE_ACTIVE);
@@ -522,7 +670,6 @@ function persist(){
     return false;
   }
 }
-
 function updateStorageInfo(){
   var bytes = new Blob([JSON.stringify(docs)]).size;
   var size = bytes < 1024 ? bytes + " Б" : bytes < 1048576 ? (bytes/1024).toFixed(1) + " КБ" : (bytes/1048576).toFixed(2) + " МБ";
@@ -532,10 +679,15 @@ function updateStorageInfo(){
   $("#docCount").textContent = n + " " + word;
 }
 
+/* ============ ДОКУМЕНТЫ ============ */
 var editor = $("#editor");
 var titleInput = $("#docTitle");
 var app = $("#app");
-function currentDoc(){ for(var i = 0; i < docs.length; i++){ if(docs[i].id === activeId) return docs[i]; } return null; }
+
+function currentDoc(){
+  for(var i = 0; i < docs.length; i++){ if(docs[i].id === activeId) return docs[i]; }
+  return null;
+}
 function setSavedState(state, text){
   var dot = $("#savedDot");
   if(state !== "saved") dot.classList.add("dirty"); else dot.classList.remove("dirty");
@@ -570,7 +722,8 @@ function openDoc(id){
   var fi = docFiles.get(id);
   if(fi){ activeFileHandle = fi.handle; activeFileName = fi.name; activeFileFormat = fi.format; }
   else{ activeFileHandle = null; activeFileName = null; activeFileFormat = "html"; }
-  updateFileBadge(); setSavedState("saved","Сохранено");
+  updateFileBadge();
+  setSavedState("saved","Сохранено");
   updateStats(); renderDocList(); renderDocMeta();
   editor.focus();
   $("#pageWrap").scrollTop = 0;
@@ -601,9 +754,9 @@ function deleteDoc(id){
 function renderDocList(){
   var q = ($("#docSearch").value || "").toLowerCase().trim();
   var list = $("#docList");
-  var items = docs.filter(function(d){
-    return !q || d.title.toLowerCase().indexOf(q) !== -1 || stripTags(d.html).toLowerCase().indexOf(q) !== -1;
-  }).sort(function(a,b){ return b.updated - a.updated; });
+  var items = docs
+    .filter(function(d){ return !q || d.title.toLowerCase().indexOf(q) !== -1 || stripTags(d.html).toLowerCase().indexOf(q) !== -1; })
+    .sort(function(a,b){ return b.updated - a.updated; });
   if(!items.length){ list.innerHTML = '<div class="empty">Ничего не найдено</div>'; return; }
   var html = "";
   items.forEach(function(d){
@@ -623,6 +776,7 @@ function renderDocMeta(){
   $("#docMeta").textContent = "Изменён: " + fmtDate(d.updated);
 }
 
+/* ============ СТАТИСТИКА ============ */
 function updateStats(){
   var text = editor.innerText || "";
   var words = countWords(text);
@@ -633,6 +787,7 @@ function updateStats(){
   $("#statTime").textContent = (words === 0 ? 0 : Math.max(1, Math.ceil(words/200))) + " мин";
 }
 
+/* ============ КОМАНДЫ ============ */
 function rememberSelection(){
   var sel = window.getSelection();
   if(sel.rangeCount && editor.contains(sel.anchorNode)) savedRange = sel.getRangeAt(0).cloneRange();
@@ -694,6 +849,7 @@ function setFontSize(px){
   updateStats(); scheduleSave();
 }
 
+/* ============ ССЫЛКИ / ИЗОБРАЖЕНИЯ / ТАБЛИЦЫ ============ */
 function insertHTML(html){
   restoreSelection();
   editor.focus();
@@ -754,19 +910,15 @@ function insertTable(){
   toast("Таблица " + rows + "×" + cols);
 }
 
+/* ============ ОЧИСТКА HTML ============ */
 function sanitizeHTML(html){
   var doc = new DOMParser().parseFromString(html, "text/html");
   doc.querySelectorAll("style,script,meta,link,title,base,noscript").forEach(function(n){ n.remove(); });
   Array.prototype.forEach.call(doc.body.querySelectorAll("*"), function(el){
     if(el.tagName.indexOf(":") !== -1){ el.remove(); return; }
     if(/^(html|head|body)$/i.test(el.tagName)) return;
-    el.removeAttribute("class");
-    el.removeAttribute("id");
-    el.removeAttribute("lang");
-    el.removeAttribute("dir");
-    Array.prototype.forEach.call(el.attributes, function(a){
-      if(/^on/i.test(a.name)) el.removeAttribute(a.name);
-    });
+    el.removeAttribute("class"); el.removeAttribute("id"); el.removeAttribute("lang"); el.removeAttribute("dir");
+    Array.prototype.forEach.call(el.attributes, function(a){ if(/^on/i.test(a.name)) el.removeAttribute(a.name); });
     var st = el.getAttribute("style");
     if(st){
       var keep = st.split(";").map(function(s){ return s.trim(); })
@@ -779,6 +931,7 @@ function sanitizeHTML(html){
   return doc.body.innerHTML;
 }
 
+/* ============ HTML ДОКУМЕНТ ============ */
 function fullHTMLDocument(){
   var d = currentDoc();
   var body = editor.innerHTML;
@@ -798,6 +951,7 @@ function fullHTMLDocument(){
     "</style>\n</head>\n<body>\n" + body + "\n</body>\n</html>";
 }
 
+/* ============ MARKDOWN ============ */
 function htmlToMarkdown(html){
   var root = document.createElement("div");
   root.innerHTML = html;
@@ -916,6 +1070,7 @@ function markdownToHTML(md){
   return html;
 }
 
+/* ============ ZIP CREATOR ============ */
 var CRC_TABLE = (function(){
   var t = new Uint32Array(256);
   for(var i = 0; i < 256; i++){
@@ -975,6 +1130,7 @@ function createZip(files){
   return out;
 }
 
+/* ============ DOCX ============ */
 function htmlToWordParagraphs(html){
   var root = document.createElement("div");
   root.innerHTML = html;
@@ -1128,6 +1284,7 @@ function generateDocx(){
   ]);
 }
 
+/* ============ NPPRO ============ */
 function generateNppro(){
   var d = currentDoc();
   var payload = {
@@ -1144,6 +1301,7 @@ function parseNppro(text){
   return null;
 }
 
+/* ============ DOWNLOAD ============ */
 function download(filename, content, mime){
   var blob = new Blob([content], {type:mime});
   var url = URL.createObjectURL(blob);
@@ -1174,12 +1332,14 @@ function getContentForFormat(fmt){
   return {content:fullHTMLDocument(), mime:"text/html;charset=utf-8", ext:"html"};
 }
 
+/* ============ ПЕЧАТЬ ============ */
 function doPrint(){
   saveNow();
   if(document.activeElement && document.activeElement.blur) document.activeElement.blur();
   setTimeout(function(){ window.print(); }, 100);
 }
 
+/* ============ SAVE / OPEN ============ */
 function saveToFileNative(forceDialog){
   saveNow();
   var d = currentDoc(); if(!d) return;
@@ -1209,7 +1369,7 @@ function saveToFileNative(forceDialog){
 }
 
 function saveToFile(forceDialog){
-  if(HAS_PYWEBVIEW && window.pywebview && window.pywebview.api) return saveToFileNative(forceDialog);
+  if(HAS_PYWEBVIEW && window.pywebview && window.pywebview.api){ return saveToFileNative(forceDialog); }
   saveNow();
   var d = currentDoc(); if(!d) return;
   if(!HAS_FS){
@@ -1302,7 +1462,7 @@ function loadNativeFile(res){
 }
 
 function openFileFromDisk(){
-  if(HAS_PYWEBVIEW && window.pywebview && window.pywebview.api) return openFileNative();
+  if(HAS_PYWEBVIEW && window.pywebview && window.pywebview.api){ return openFileNative(); }
   if(!HAS_FS){ $("#fileInput").click(); return; }
   var types = [
     {description:"Все поддерживаемые", accept:{
@@ -1442,7 +1602,7 @@ function doExport(kind){
   toast("💾 Файл скачан: " + name + "." + info.ext);
 }
 
-/* FOCUS STUDIO */
+/* ============ FOCUS STUDIO ============ */
 var pomo = {work:25, rest:5, remaining:25*60, mode:"work", running:false, timer:null};
 function pomoRender(){
   var m = Math.floor(pomo.remaining / 60);
@@ -1603,6 +1763,7 @@ function ttsStop(){
   ttsUtterance = null;
 }
 
+/* ============ ПОИСК ============ */
 var matches = [], matchIndex = -1;
 function collectMatches(){
   var query = $("#findInput").value;
@@ -1686,6 +1847,7 @@ function replaceAll(){
   else toast("Совпадений не найдено");
 }
 
+/* ============ МЕНЮ ============ */
 var openMenuEl = null;
 function closeAllMenus(){ if(openMenuEl){ openMenuEl.remove(); openMenuEl = null; } }
 document.addEventListener("click", closeAllMenus);
@@ -1710,9 +1872,9 @@ function buildExportMenu(){
     '<button data-act="saveas">💾 Сохранить как… (Ctrl+Shift+S)</button>' +
     "<hr>" +
     '<div class="menu-label">Экспорт в форматах</div>' +
-    '<button data-act="docx">📘 Word (.docx)</button>' +
-    '<button data-act="pdf">📕 PDF — через печать</button>' +
-    '<button data-act="nppro">⚡ Nitpad Pro (.nppro)</button>' +
+    '<button data-act="docx">📘 Word (.docx) — настоящий</button>' +
+    '<button data-act="pdf">📕 PDF (.pdf) — через печать</button>' +
+    '<button data-act="nppro">⚡ Nitpad Pro (.nppro) — родной</button>' +
     '<button data-act="html">🌐 HTML (.html)</button>' +
     '<button data-act="md">📝 Markdown (.md)</button>' +
     '<button data-act="txt">📄 Текст (.txt)</button>' +
@@ -1720,13 +1882,52 @@ function buildExportMenu(){
     '<button data-act="json">📦 Резервная копия (.json)</button>';
   return menu;
 }
+function buildVersionMenu(){
+  var menu = document.createElement("div");
+  menu.className = "menu";
+  var items = [
+    {id:"auto",    icon:"🔄", name:"Авто",         hint:"по ширине экрана"},
+    {id:"mobile",  icon:"📱", name:"Мобильная",    hint:"всегда компактная"},
+    {id:"desktop", icon:"🖥",  name:"Компьютерная", hint:"полный тулбар"}
+  ];
+  var html = '<div class="menu-label">Версия интерфейса</div>';
+  items.forEach(function(it){
+    html += '<button data-mode="' + it.id + '"' + (FORCE_MODE === it.id ? ' class="active"' : "") + '>' +
+      "<span style='font-size:16px'>" + it.icon + "</span>" +
+      "<span style='flex:1;text-align:left'>" + it.name +
+        "<br><small style='color:var(--muted);font-size:11px'>" + it.hint + "</small></span>" +
+      (FORCE_MODE === it.id ? "<span style='color:var(--accent);font-weight:700'>✓</span>" : "") +
+      "</button>";
+  });
+  html += "<hr><div class='menu-label'>Сейчас: " + getVersionLabel() + "</div>";
+  menu.innerHTML = html;
+  return menu;
+}
+function openVersionMenu(anchor){
+  if(openMenuEl){ closeAllMenus(); return; }
+  var menu = buildVersionMenu();
+  var rect = (anchor || document.getElementById("versionBtn") || document.body).getBoundingClientRect();
+  var left = Math.max(8, Math.min(window.innerWidth - 280, rect.right - 280));
+  menu.style.top = (rect.bottom + 6) + "px";
+  menu.style.left = left + "px";
+  document.body.appendChild(menu);
+  openMenuEl = menu;
+  menu.querySelectorAll("[data-mode]").forEach(function(b){
+    b.addEventListener("click", function(ev){
+      ev.stopPropagation();
+      setForceMode(b.dataset.mode);
+      closeAllMenus();
+    });
+  });
+}
 
+/* ============ ЗУМ ============ */
 function applyZoom(){
   editor.style.fontSize = (16 * zoom / 100).toFixed(2) + "px";
   $("#zoomLabel").textContent = zoom + "%";
 }
 
-/* ============ МОБИЛЬНАЯ ЛОГИКА: сайдбар как overlay ============ */
+/* ============ САЙДБАР ============ */
 function toggleSidebarMobile(force){
   var isOpen = app.classList.contains("sidebar-open");
   var willOpen = (force === undefined) ? !isOpen : force;
@@ -1734,10 +1935,55 @@ function toggleSidebarMobile(force){
   else app.classList.remove("sidebar-open");
 }
 function closeSidebarMobile(){ app.classList.remove("sidebar-open"); }
+function handleSidebarToggleClick(){
+  if(isMobileLayout()) toggleSidebarMobile();
+  else app.classList.toggle("no-sidebar");
+}
 
+/* ============ WELCOME MODAL ============ */
+function shouldShowWelcome(){
+  if(MODE_FROM_URL) return false;
+  if(HAS_SAVED_MODE) return false;
+  return true;
+}
+function showWelcomeModal(){
+  var modal = document.getElementById("welcomeModal");
+  modal.hidden = false;
+  modal.querySelectorAll(".wm-opt").forEach(function(btn){
+    btn.addEventListener("click", function(){
+      var mode = btn.dataset.mode;
+      var remember = document.getElementById("wmRemember").checked;
+      // Виртуально применяем режим, чтобы UI обновился мгновенно
+      setForceMode(mode, {save: remember, silent: true});
+      modal.hidden = true;
+      var names = { auto:"Авто", mobile:"Мобильная", desktop:"Компьютерная" };
+      toast("🌐 Выбрано: " + names[mode] + (remember ? " (запомнено)" : ""));
+      setTimeout(function(){ editor.focus(); }, 200);
+    });
+  });
+  // Фокус на первую кнопку для клавиатуры
+  setTimeout(function(){
+    var first = modal.querySelector(".wm-opt");
+    if(first) first.focus();
+  }, 100);
+}
+
+/* ============ ИНИЦИАЛИЗАЦИЯ ============ */
 function init(){
-  if(typeof window.pywebview !== 'undefined' && window.pywebview.api) HAS_PYWEBVIEW = true;
-  console.log('[Nitpad Pro] Режим:', HAS_PYWEBVIEW ? 'Desktop (pywebview)' : (HAS_FS ? 'Browser (FS API)' : 'Browser (download)'), IS_MOBILE ? '[mobile]' : '[desktop]');
+  if(typeof window.pywebview !== "undefined" && window.pywebview.api) HAS_PYWEBVIEW = true;
+
+  applyLayoutClasses();
+  updateVersionBadge();
+
+  console.log(
+    "%c[Nitpad Pro] Запуск",
+    "font-weight:bold;color:#4f46e5",
+    "\n  Среда:    " + (HAS_PYWEBVIEW ? "Desktop (pywebview)" : HAS_FS ? "Browser (FS API)" : "Browser (download)"),
+    "\n  Режим:    " + FORCE_MODE + " → " + getVersionLabel(),
+    "\n  Ширина:   " + window.innerWidth + "px",
+    "\n  Touch:    " + IS_TOUCH,
+    "\n  iOS:      " + IS_IOS
+  );
 
   var saved = "light";
   try{ saved = localStorage.getItem("nitpad.theme") || "light"; }catch(e){}
@@ -1745,70 +1991,53 @@ function init(){
 
   loadState(); openDoc(activeId); updateStorageInfo(); renderDocList(); initFontSizes(); applyZoom();
 
-  /* --- Сайдбар: на десктопе — toggle .no-sidebar, на мобилке — overlay --- */
-  $("#sidebarToggle").addEventListener("click", function(){
-    if(IS_MOBILE) toggleSidebarMobile();
-    else app.classList.toggle("no-sidebar");
-  });
+  /* --- Сайдбар --- */
+  $("#sidebarToggle").addEventListener("click", handleSidebarToggleClick);
   $("#sidebarBackdrop").addEventListener("click", closeSidebarMobile);
-  /* Клик по документу на мобилке закрывает сайдбар */
-  $("#docList").addEventListener("click", function(){ if(IS_MOBILE) closeSidebarMobile(); });
+  $("#docList").addEventListener("click", function(){ if(isMobileLayout()) closeSidebarMobile(); });
 
+  /* --- Фокус --- */
   $("#focusBtn").addEventListener("click", function(){
     app.classList.toggle("focus");
     toast(app.classList.contains("focus") ? "Режим фокусировки (Esc — выход)" : "Обычный режим");
   });
 
+  /* --- data-cmd --- */
   $$("[data-cmd]").forEach(function(btn){
     btn.addEventListener("mousedown", function(e){ e.preventDefault(); });
     btn.addEventListener("click", function(){ exec(btn.dataset.cmd); });
   });
 
-  $("#blockSelect").addEventListener("change", function(e){
-    exec("formatBlock", "<" + e.target.value + ">");
-    e.target.selectedIndex = 0;
-  });
-  $("#fontFamily").addEventListener("change", function(e){
-    if(e.target.value) exec("fontName", e.target.value);
-    e.target.selectedIndex = 0;
-  });
-  $("#fontSize").addEventListener("change", function(e){
-    if(e.target.value) setFontSize(e.target.value);
-    e.target.selectedIndex = 0;
-  });
+  /* --- Селекты --- */
+  $("#blockSelect").addEventListener("change", function(e){ exec("formatBlock", "<" + e.target.value + ">"); e.target.selectedIndex = 0; });
+  $("#fontFamily").addEventListener("change", function(e){ if(e.target.value) exec("fontName", e.target.value); e.target.selectedIndex = 0; });
+  $("#fontSize").addEventListener("change", function(e){ if(e.target.value) setFontSize(e.target.value); e.target.selectedIndex = 0; });
   $("#foreColor").addEventListener("input", function(e){ exec("foreColor", e.target.value); });
   $("#hiliteColor").addEventListener("input", function(e){ exec("hiliteColor", e.target.value); });
-  $("#clearFormat").addEventListener("click", function(){
-    exec("removeFormat"); exec("formatBlock", "<p>");
-    toast("Форматирование очищено");
-  });
+  $("#clearFormat").addEventListener("click", function(){ exec("removeFormat"); exec("formatBlock", "<p>"); toast("Форматирование очищено"); });
+
+  /* --- Вставки --- */
   $("#addLink").addEventListener("click", addLink);
   $("#addImage").addEventListener("click", function(){
     if(HAS_PYWEBVIEW && window.pywebview && window.pywebview.api && window.pywebview.api.pick_image){
       window.pywebview.api.pick_image().then(function(res){
-        if(res && res.status === "ok"){
-          insertHTML('<img src="' + res.dataUrl + '" alt="' + escapeHTML(res.name) + '">');
-          toast("Изображение вставлено");
-        } else if(res && res.status === "error") toast("Ошибка: " + res.message);
+        if(res && res.status === "ok"){ insertHTML('<img src="' + res.dataUrl + '" alt="' + escapeHTML(res.name) + '">'); toast("Изображение вставлено"); }
+        else if(res && res.status === "error") toast("Ошибка: " + res.message);
       });
       return;
     }
     $("#imageInput").click();
   });
-  $("#imageInput").addEventListener("change", function(e){
-    if(e.target.files[0]) insertImageFromFile(e.target.files[0]);
-    e.target.value = "";
-  });
+  $("#imageInput").addEventListener("change", function(e){ if(e.target.files[0]) insertImageFromFile(e.target.files[0]); e.target.value = ""; });
   $("#addTable").addEventListener("click", insertTable);
 
+  /* --- Файлы --- */
   $("#openFileBtn").addEventListener("click", openFileFromDisk);
   $("#saveFileBtn").addEventListener("click", function(){ saveToFile(false); });
-  $("#fileInput").addEventListener("change", function(e){
-    if(e.target.files[0]) importFile(e.target.files[0]);
-    e.target.value = "";
-  });
+  $("#fileInput").addEventListener("change", function(e){ if(e.target.files[0]) importFile(e.target.files[0]); e.target.value = ""; });
   $("#printBtn").addEventListener("click", doPrint);
 
+  /* --- Меню экспорта --- */
   $("#exportBtn").addEventListener("click", function(e){
     e.stopPropagation();
     if(openMenuEl){ closeAllMenus(); return; }
@@ -1823,13 +2052,13 @@ function init(){
       b.addEventListener("click", function(ev){
         ev.stopPropagation();
         var act = b.dataset.act;
-        if(act === "saveas") saveToFile(true);
-        else doExport(act);
+        if(act === "saveas") saveToFile(true); else doExport(act);
         closeAllMenus();
       });
     });
   });
 
+  /* --- Меню тем --- */
   $("#themeBtn").addEventListener("click", function(e){
     e.stopPropagation();
     if(openMenuEl){ closeAllMenus(); return; }
@@ -1843,12 +2072,24 @@ function init(){
     menu.querySelectorAll("[data-theme]").forEach(function(b){
       b.addEventListener("click", function(ev){
         ev.stopPropagation();
-        setTheme(b.dataset.theme); closeAllMenus();
+        setTheme(b.dataset.theme);
+        closeAllMenus();
         toast("Тема: " + b.textContent.trim());
       });
     });
   });
 
+  /* --- Меню версии --- */
+  $("#versionBtn").addEventListener("click", function(e){
+    e.stopPropagation();
+    openVersionMenu(e.currentTarget);
+  });
+  $("#versionBadge").addEventListener("click", function(e){
+    e.stopPropagation();
+    openVersionMenu(e.currentTarget);
+  });
+
+  /* --- Поиск --- */
   $("#findBtn").addEventListener("click", openFind);
   $("#findClose").addEventListener("click", function(){ $("#findBar").hidden = true; editor.focus(); });
   $("#findInput").addEventListener("input", collectMatches);
@@ -1862,7 +2103,8 @@ function init(){
     if(e.key === "Escape"){ $("#findBar").hidden = true; editor.focus(); }
   });
 
-  $("#newDocBtn").addEventListener("click", function(){ createDoc(); if(IS_MOBILE) closeSidebarMobile(); });
+  /* --- Документы --- */
+  $("#newDocBtn").addEventListener("click", function(){ createDoc(); if(isMobileLayout()) closeSidebarMobile(); });
   $("#docSearch").addEventListener("input", renderDocList);
   $("#docList").addEventListener("click", function(e){
     var del = e.target.closest("[data-del]");
@@ -1871,6 +2113,7 @@ function init(){
     if(item && item.dataset.id !== activeId) openDoc(item.dataset.id);
   });
 
+  /* --- Редактор --- */
   editor.addEventListener("input", function(){ updateStats(); scheduleSave(); });
   editor.addEventListener("paste", function(e){
     var html = e.clipboardData.getData("text/html");
@@ -1880,18 +2123,16 @@ function init(){
   editor.addEventListener("mouseup", rememberSelection);
   editor.addEventListener("blur", rememberSelection);
   editor.addEventListener("keydown", function(e){
-    if(e.key === "Tab"){
-      e.preventDefault();
-      document.execCommand(e.shiftKey ? "outdent" : "indent");
-      scheduleSave();
-    }
+    if(e.key === "Tab"){ e.preventDefault(); document.execCommand(e.shiftKey ? "outdent" : "indent"); scheduleSave(); }
   });
   titleInput.addEventListener("input", scheduleSave);
   titleInput.addEventListener("blur", saveNow);
 
+  /* --- Зум --- */
   $("#zoomIn").addEventListener("click", function(){ zoom = Math.min(200, zoom + 10); applyZoom(); });
   $("#zoomOut").addEventListener("click", function(){ zoom = Math.max(60, zoom - 10); applyZoom(); });
 
+  /* --- Focus Studio --- */
   $("#focusStudioBtn").addEventListener("click", function(){
     var fs = $("#focusStudio");
     fs.hidden = !fs.hidden;
@@ -1925,14 +2166,13 @@ function init(){
   });
   $("#ttsPlay").addEventListener("click", ttsPlay);
   $("#ttsStop").addEventListener("click", ttsStop);
-  $("#ttsRate").addEventListener("input", function(e){
-    $("#ttsRateVal").textContent = parseFloat(e.target.value).toFixed(1) + "×";
-  });
+  $("#ttsRate").addEventListener("input", function(e){ $("#ttsRateVal").textContent = parseFloat(e.target.value).toFixed(1) + "×"; });
   if("speechSynthesis" in window){
     window.speechSynthesis.getVoices();
     window.speechSynthesis.onvoiceschanged = function(){ window.speechSynthesis.getVoices(); };
   }
 
+  /* --- Клавиши --- */
   document.addEventListener("keydown", function(e){
     var ctrl = e.ctrlKey || e.metaKey;
     if(e.key === "Escape"){
@@ -1954,31 +2194,39 @@ function init(){
     if(ctrl && e.key.toLowerCase() === "u"){ e.preventDefault(); exec("underline"); }
   });
 
-  /* На мобильном — предупреждение о несохранённом */
-  window.addEventListener("beforeunload", function(e){
-    saveNow();
-  });
+  window.addEventListener("beforeunload", saveNow);
 
-  /* Автозакрытие сайдбара при переходе на десктопную ширину */
-  var mq = window.matchMedia("(max-width:820px)");
-  function handleMQ(){
-    IS_MOBILE = mq.matches;
-    if(!IS_MOBILE){
-      closeSidebarMobile();
-    } else {
-      /* Сразу при переключении на мобильный — сайдбар закрыт */
-      app.classList.remove("no-sidebar");
+  /* --- Автопереключение раскладки --- */
+  function handleLayoutChange(e){
+    IS_NARROW = e.matches;
+    console.log('[Nitpad Pro] Ширина →', window.innerWidth + 'px ·', getVersionLabel());
+    updateVersionBadge();
+    if(FORCE_MODE === "auto"){
+      if(isMobileLayout()) closeSidebarMobile();
+      else { closeSidebarMobile(); app.classList.remove("no-sidebar"); }
     }
   }
-  if(mq.addEventListener) mq.addEventListener("change", handleMQ);
-  else if(mq.addListener) mq.addListener(handleMQ);
+  if(LAYOUT_MQ.addEventListener) LAYOUT_MQ.addEventListener("change", handleLayoutChange);
+  else if(LAYOUT_MQ.addListener) LAYOUT_MQ.addListener(handleLayoutChange);
 
-  /* Стартовая раскладка для мобильных: сайдбар закрыт */
-  if(IS_MOBILE) closeSidebarMobile();
+  /* --- Стартовая раскладка --- */
+  if(isMobileLayout()){
+    closeSidebarMobile();
+  } else {
+    app.classList.remove("sidebar-open");
+    app.classList.remove("no-sidebar");
+  }
 
-  editor.focus();
+  /* --- Показ приветственного окна при первом запуске --- */
+  if(shouldShowWelcome()){
+    showWelcomeModal();
+  } else {
+    editor.focus();
+  }
+
   updateStats();
   updateFileBadge();
+  updateVersionBadge();
 }
 
 document.addEventListener("DOMContentLoaded", init);
