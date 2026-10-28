@@ -10,11 +10,8 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Nitpad">
-<link rel="apple-touch-icon" href="./icon.png">
-<link rel="apple-touch-icon" sizes="180x180" href="./icon.png">
-<link rel="icon" type="image/png" sizes="192x192" href="./icon.png">
-<link rel="icon" type="image/png" sizes="512x512" href="./icon.png">
 <link rel="manifest" href="./manifest.json">
+<script src="https://js.puter.com/v2/"></script>
 <style>
 :root,[data-theme="light"]{--bg:#eef1f5;--panel:#fff;--text:#1a1d21;--muted:#6b7280;--border:#e0e4ea;--accent:#4f46e5;--accent-soft:#eef2ff;--editor-bg:#fff;--code-bg:#f2f4f8;--shadow:0 2px 10px rgba(20,25,40,.07)}
 [data-theme="dark"]{--bg:#111317;--panel:#1a1d22;--text:#e7e9ee;--muted:#98a0ad;--border:#2a2f38;--accent:#8b8bff;--accent-soft:#232838;--editor-bg:#1a1d22;--code-bg:#22262e;--shadow:0 2px 14px rgba(0,0,0,.4)}
@@ -146,8 +143,6 @@ label.color span{font-weight:700;border-bottom:3px solid var(--c,#000);line-heig
 .menu-label{font-size:10.5px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;padding:6px 12px 4px}
 #toast{position:fixed;bottom:48px;left:50%;transform:translate(-50%,20px);z-index:100;background:#1f2430;color:#fff;padding:11px 18px;border-radius:10px;font-size:13px;opacity:0;pointer-events:none;transition:.28s;box-shadow:0 6px 24px rgba(0,0,0,.3);max-width:90vw;text-align:center}
 #toast.show{opacity:1;transform:translate(-50%,0)}
-
-/* ============ WELCOME MODAL ============ */
 .welcome-modal{position:fixed;inset:0;z-index:200;background:rgba(15,18,25,.75);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;padding:20px;animation:wmFade .3s ease}
 @keyframes wmFade{from{opacity:0}to{opacity:1}}
 .wm-card{background:var(--panel);border-radius:20px;box-shadow:0 24px 80px rgba(0,0,0,.5);max-width:560px;width:100%;padding:32px 28px 24px;text-align:center;animation:wmSlide .35s cubic-bezier(.2,.9,.3,1.2);max-height:92vh;overflow-y:auto}
@@ -171,10 +166,42 @@ label.color span{font-weight:700;border-bottom:3px solid var(--c,#000);line-heig
 .wm-remember input{width:16px;height:16px;accent-color:var(--accent);cursor:pointer}
 .wm-foot{font-size:11px;color:var(--muted);opacity:.7;margin-top:4px}
 
+/* ============ AI PANEL ============ */
+.ai-panel{position:fixed;top:0;right:0;bottom:0;width:380px;z-index:70;background:var(--panel);border-left:1px solid var(--border);box-shadow:-8px 0 30px rgba(0,0,0,.18);display:flex;flex-direction:column;overflow:hidden;padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom);animation:aiSlideIn .22s ease}
+@keyframes aiSlideIn{from{transform:translateX(40px);opacity:0}to{transform:none;opacity:1}}
+.ai-head{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid var(--border);background:linear-gradient(135deg,var(--accent-soft),transparent);flex-shrink:0}
+.ai-head strong{font-size:15px;background:linear-gradient(135deg,var(--accent),#a78bfa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.ai-head button{border:none;background:transparent;font-size:16px;cursor:pointer;color:var(--muted);padding:4px 8px;border-radius:6px}
+.ai-head button:hover{background:var(--accent-soft)}
+.ai-actions{padding:10px 12px;display:grid;grid-template-columns:1fr 1fr;gap:6px;border-bottom:1px solid var(--border);flex-shrink:0;max-height:220px;overflow-y:auto}
+.ai-actions button{display:flex;align-items:center;gap:6px;padding:9px 10px;border-radius:8px;border:1px solid var(--border);background:transparent;cursor:pointer;font-size:12.5px;text-align:left;color:var(--text);transition:all .15s;line-height:1.25}
+.ai-actions button:hover{background:var(--accent-soft);border-color:var(--accent);transform:translateY(-1px)}
+.ai-actions button span.ai-icon{font-size:15px;flex-shrink:0}
+.ai-custom{padding:10px 12px;border-bottom:1px solid var(--border);display:flex;gap:6px;flex-shrink:0}
+.ai-custom input{flex:1;padding:9px 12px;border:1px solid var(--border);border-radius:8px;background:var(--bg);outline:none;font-size:13px;color:var(--text)}
+.ai-custom input:focus{border-color:var(--accent)}
+.ai-custom button{padding:9px 14px;border-radius:8px;border:none;background:var(--accent);color:#fff;font-weight:600;cursor:pointer;font-size:13px}
+.ai-output{flex:1;overflow-y:auto;padding:14px;font-size:14px;line-height:1.6;color:var(--text)}
+.ai-empty{color:var(--muted);text-align:center;padding:40px 20px;font-size:13px}
+.ai-loading{display:flex;flex-direction:column;align-items:center;gap:12px;padding:40px 20px;color:var(--muted)}
+.ai-loading .spinner{width:32px;height:32px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.ai-result{background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:12px;white-space:pre-wrap;word-wrap:break-word;color:var(--text);font-size:14px;line-height:1.55;animation:aiResultIn .3s ease}
+@keyframes aiResultIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.ai-result-label{font-size:11px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px}
+.ai-actions-row{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap}
+.ai-actions-row button{padding:8px 14px;border-radius:8px;border:1px solid var(--border);background:var(--panel);cursor:pointer;font-size:13px;font-weight:600;color:var(--text);transition:all .15s}
+.ai-actions-row button:hover{border-color:var(--accent)}
+.ai-actions-row button.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+.ai-actions-row button.primary:hover{filter:brightness(1.1)}
+.ai-error{color:#dc2626;background:#fef2f2;padding:12px;border-radius:8px;font-size:13px;border:1px solid #fecaca}
+.tb.ai-btn{background:linear-gradient(135deg,#4f46e5,#a78bfa);color:#fff !important;border-color:transparent !important;font-weight:700;box-shadow:0 2px 8px rgba(79,70,229,.35)}
+.tb.ai-btn:hover{background:linear-gradient(135deg,#4338ca,#8b5cf6);transform:translateY(-1px);box-shadow:0 4px 12px rgba(79,70,229,.45)}
+
 @media print{
   html,body{background:#fff!important;color:#000!important;overflow:visible!important;height:auto!important}
   .app{display:block!important;height:auto!important}
-  .toolbar,.sidebar,.statusbar,.doc-head,.findbar,.menu,#toast,.focus-studio,.file-badge,.sidebar-backdrop,.version-badge,.welcome-modal{display:none!important}
+  .toolbar,.sidebar,.statusbar,.doc-head,.findbar,.menu,#toast,.focus-studio,.file-badge,.sidebar-backdrop,.version-badge,.welcome-modal,.ai-panel{display:none!important}
   .main{display:block!important;overflow:visible!important}
   .page-wrap{overflow:visible!important;padding:0!important}
   .page{box-shadow:none!important;padding:0!important;max-width:none!important;border-radius:0!important;background:#fff!important;min-height:0!important}
@@ -186,10 +213,6 @@ label.color span{font-weight:700;border-bottom:3px solid var(--c,#000);line-heig
   #editor table,#editor img,#editor pre,#editor blockquote{page-break-inside:avoid}
   @page{size:A4;margin:2cm}
 }
-
-/* ============================================================
-   МОБИЛЬНАЯ РАСКЛАДКА (≤ 820px)
-   ============================================================ */
 @media (max-width:820px){
   body{font-size:14.5px}
   html{-webkit-text-size-adjust:100%}
@@ -237,8 +260,8 @@ label.color span{font-weight:700;border-bottom:3px solid var(--c,#000);line-heig
   .wm-title{font-size:22px}
   .wm-icon{font-size:48px}
   .wm-opt{padding:16px 10px}
+  .ai-panel{width:100%;max-width:100%}
 
-  /* force-desktop отключает всё выше */
   html.force-desktop body{font-size:14px}
   html.force-desktop .app{grid-template-columns:270px 1fr}
   html.force-desktop .toolbar{padding:6px 10px}
@@ -259,11 +282,6 @@ label.color span{font-weight:700;border-bottom:3px solid var(--c,#000);line-heig
   html.force-desktop .zoom-ctrl{display:flex}
   html.force-desktop #editor{font-size:16px}
 }
-
-/* ============================================================
-   ПРИНУДИТЕЛЬНАЯ МОБИЛЬНАЯ РАСКЛАДКА (html.force-mobile)
-   Применяется всегда, даже на широком экране.
-   ============================================================ */
 html.force-mobile body{font-size:14.5px}
 html.force-mobile .app{grid-template-columns:0 1fr}
 html.force-mobile .app.no-sidebar .sidebar{display:flex}
@@ -294,6 +312,7 @@ html.force-mobile .zoom-ctrl{display:none}
 html.force-mobile .version-badge{font-size:10px;padding:2px 6px}
 html.force-mobile #toast{bottom:calc(60px + env(safe-area-inset-bottom))}
 html.force-mobile .focus-studio{width:100%;max-width:400px}
+html.force-mobile .ai-panel{width:100%;max-width:100%}
 </style>
 </head>
 <body>
@@ -361,6 +380,9 @@ html.force-mobile .focus-studio{width:100%;max-width:400px}
         <button class="tb icon" id="addImage" title="Изображение">🖼️</button>
         <button class="tb icon" id="addTable" title="Таблица">▦</button>
         <button class="tb icon" data-cmd="insertHorizontalRule" title="Линия">―</button>
+      </div>
+      <div class="group">
+        <button class="tb ai-btn" id="aiBtn" title="AI-помощник (Ctrl+Shift+J)">✨ AI</button>
       </div>
       <div class="group">
         <button class="tb icon" id="focusStudioBtn" title="Focus Studio">🎧</button>
@@ -461,7 +483,32 @@ html.force-mobile .focus-studio{width:100%;max-width:400px}
   </div>
 </aside>
 
-<!-- ============ WELCOME MODAL ============ -->
+<aside class="ai-panel" id="aiPanel" hidden>
+  <div class="ai-head">
+    <strong>✨ AI-помощник</strong>
+    <button id="aiClose" title="Закрыть (Esc)">✕</button>
+  </div>
+  <div class="ai-actions">
+    <button data-ai="continue"><span class="ai-icon">✍️</span>Продолжить</button>
+    <button data-ai="improve"><span class="ai-icon">✨</span>Улучшить</button>
+    <button data-ai="shorten"><span class="ai-icon">✂️</span>Сократить</button>
+    <button data-ai="expand"><span class="ai-icon">📈</span>Расширить</button>
+    <button data-ai="fix"><span class="ai-icon">📝</span>Грамматика</button>
+    <button data-ai="translate"><span class="ai-icon">🌐</span>Перевести</button>
+    <button data-ai="tone_formal"><span class="ai-icon">👔</span>Формально</button>
+    <button data-ai="tone_casual"><span class="ai-icon">😊</span>Неформально</button>
+    <button data-ai="summarize"><span class="ai-icon">📋</span>Резюме</button>
+    <button data-ai="title"><span class="ai-icon">🏷️</span>Заголовок</button>
+  </div>
+  <div class="ai-custom">
+    <input id="aiQuestion" placeholder="Свой вопрос о тексте...">
+    <button id="aiAsk">→</button>
+  </div>
+  <div class="ai-output" id="aiOutput">
+    <div class="ai-empty">Выделите текст и выберите действие — или задайте вопрос</div>
+  </div>
+</aside>
+
 <div class="welcome-modal" id="welcomeModal" hidden>
   <div class="wm-card">
     <div class="wm-icon">⚡</div>
@@ -571,7 +618,6 @@ function setForceMode(mode, opts){
   console.log('[Nitpad Pro] Режим →', mode, '(' + getVersionLabel() + ')');
 }
 
-/* Правильная высота под плавающую адресную строку */
 function fixViewportHeight(){
   document.documentElement.style.setProperty("--vh", window.innerHeight * 0.01 + "px");
 }
@@ -639,7 +685,7 @@ function loadState(){
   try{ docs = JSON.parse(localStorage.getItem(STORAGE_DOCS)) || []; }catch(e){ docs = []; }
   if(!Array.isArray(docs) || !docs.length){
     var welcome = "<h1>Nitpad Pro — твой умный блокнот 👋</h1>" +
-      "<p>Полноценный редактор. Всё <b>автосохраняется</b>.</p>" +
+      "<p>Полноценный редактор. Всё <b>автосохраняется</b> локально в браузере.</p>" +
       "<h2>✨ Возможности</h2>" +
       "<ul>" +
       "<li><b>🖨️ Печать</b> — кнопка в панели или Ctrl+P.</li>" +
@@ -647,9 +693,10 @@ function loadState(){
       "<li><b>⚡ Nitpad Pro (.nppro)</b> — родной формат.</li>" +
       "<li><b>🎨 9 тем</b> — светлая, тёмная, Nord, Monokai и другие.</li>" +
       "<li><b>🎧 Focus Studio</b> — помодоро, фоновые звуки, чтение вслух.</li>" +
+      "<li><b>✨ AI-помощник</b> — улучшит, сократит, переведёт, ответит на вопрос.</li>" +
       "<li><b>🌐 Три версии интерфейса</b> — Авто / Мобильная / Компьютерная.</li>" +
       "</ul>" +
-      "<blockquote>Работает и на ПК, и на телефоне. Версию можно сменить в любой момент — кнопка 🌐 в тулбаре.</blockquote>";
+      "<blockquote>Работает и на ПК, и на телефоне. Версию можно сменить в любой момент — кнопка 🌐 в тулбаре. AI — кнопка ✨.</blockquote>";
     docs = [newDocObject("Добро пожаловать в Nitpad Pro ⚡", welcome)];
   }
   activeId = localStorage.getItem(STORAGE_ACTIVE);
@@ -1953,7 +2000,6 @@ function showWelcomeModal(){
     btn.addEventListener("click", function(){
       var mode = btn.dataset.mode;
       var remember = document.getElementById("wmRemember").checked;
-      // Виртуально применяем режим, чтобы UI обновился мгновенно
       setForceMode(mode, {save: remember, silent: true});
       modal.hidden = true;
       var names = { auto:"Авто", mobile:"Мобильная", desktop:"Компьютерная" };
@@ -1961,11 +2007,215 @@ function showWelcomeModal(){
       setTimeout(function(){ editor.focus(); }, 200);
     });
   });
-  // Фокус на первую кнопку для клавиатуры
   setTimeout(function(){
     var first = modal.querySelector(".wm-opt");
     if(first) first.focus();
   }, 100);
+}
+
+/* ============================================================
+   AI-ПОМОЩНИК
+   ============================================================ */
+var aiPanelEl = null, aiSavedRange = null, aiBusy = false, aiLastResult = null, aiLastMode = null;
+
+function saveAIRange(){
+  var sel = window.getSelection();
+  if(sel.rangeCount && editor.contains(sel.anchorNode)){
+    aiSavedRange = sel.getRangeAt(0).cloneRange();
+  } else {
+    aiSavedRange = null;
+  }
+}
+function restoreAIRange(){
+  if(!aiSavedRange) return false;
+  var sel = window.getSelection();
+  sel.removeAllRanges();
+  try{ sel.addRange(aiSavedRange); return true; }catch(e){ return false; }
+}
+function getAISelection(){
+  if(aiSavedRange) return aiSavedRange.toString();
+  var sel = window.getSelection();
+  if(sel && !sel.isCollapsed && editor.contains(sel.anchorNode)) return sel.toString();
+  return "";
+}
+
+async function aiChat(prompt, system){
+  if(typeof puter === "undefined" || !puter.ai){
+    throw new Error("Puter.js не загружен. Проверьте интернет-соединение.");
+  }
+  var opts = system ? { system: system } : {};
+  var resp = await puter.ai.chat(prompt, opts);
+  return (resp && resp.message && resp.message.content) || (resp && resp.text) || String(resp);
+}
+
+function aiOutputEl(){ return document.getElementById("aiOutput"); }
+
+function showAILoading(label){
+  aiOutputEl().innerHTML = '<div class="ai-loading"><div class="spinner"></div><div>AI думает… ' + escapeHTML(label || "") + "</div></div>";
+}
+function showAIError(msg){
+  aiOutputEl().innerHTML = '<div class="ai-error">⚠️ ' + escapeHTML(msg) + "</div>";
+}
+function showAIResult(actionId, result, wasSelection, actionName){
+  aiLastResult = result;
+  aiLastMode = { action: actionId, wasSelection: wasSelection };
+  var label = actionName || "Результат";
+  aiOutputEl().innerHTML =
+    '<div class="ai-result-label">' + escapeHTML(label) + "</div>" +
+    '<div class="ai-result">' + escapeHTML(result) + "</div>" +
+    '<div class="ai-actions-row">' +
+      '<button class="primary" data-act="insert">' + (wasSelection ? "Заменить выделенное" : "Вставить") + "</button>" +
+      (wasSelection ? '<button data-act="append">Вставить в конец</button>' : "") +
+      '<button data-act="copy">Скопировать</button>' +
+      '<button data-act="regenerate">↻</button>' +
+    "</div>";
+  aiOutputEl().querySelectorAll("[data-act]").forEach(function(b){
+    b.addEventListener("click", function(){ handleAIResult(b.dataset.act); });
+  });
+}
+function handleAIResult(act){
+  if(!aiLastResult) return;
+  if(act === "insert"){
+    if(aiLastMode.wasSelection && restoreAIRange()){
+      document.execCommand("insertText", false, aiLastResult);
+    } else {
+      editor.focus();
+      editor.scrollTop = editor.scrollHeight;
+      document.execCommand("insertText", false, aiLastResult);
+    }
+    updateStats(); scheduleSave(); toast("Вставлено"); closeAIPanel();
+  } else if(act === "append"){
+    editor.focus();
+    var p = document.createElement("p");
+    p.textContent = aiLastResult;
+    editor.appendChild(p);
+    updateStats(); scheduleSave(); toast("Добавлено в конец"); closeAIPanel();
+  } else if(act === "copy"){
+    navigator.clipboard.writeText(aiLastResult).then(function(){ toast("Скопировано в буфер"); });
+  } else if(act === "regenerate"){
+    if(aiLastMode && aiLastMode.action) runAIAction(aiLastMode.action);
+  }
+}
+
+async function runAIAction(actionId, customQuestion){
+  if(aiBusy) return;
+  if(!editor.contains(document.activeElement) && !aiSavedRange){
+    saveAIRange();
+  }
+  var selection = getAISelection();
+  var docText = editor.innerText || "";
+  var target = selection || docText;
+
+  if(!target.trim()){ showAIError("Нечего обрабатывать — документ пуст или ничего не выделено"); return; }
+
+  var system = "Ты — помощник в текстовом редакторе. Отвечай ТОЛЬКО результатом, без пояснений, без кавычек, без предисловий. Твой ответ будет вставлен в документ как есть.";
+  var prompt = "", label = "";
+  var wasSelection = !!selection;
+
+  switch(actionId){
+    case "continue":
+      label = "Продолжение";
+      prompt = "Продолжи этот текст естественно, в том же стиле. Напиши 1-2 предложения продолжения без повторения уже написанного:\n\n" + target.slice(-2000);
+      break;
+    case "improve":
+      label = "Улучшение";
+      prompt = "Улучши этот текст: сделай его грамотнее, яснее и выразительнее, сохрани смысл и стиль. Верни только улучшенный текст:\n\n" + target;
+      break;
+    case "shorten":
+      label = "Сокращение";
+      prompt = "Сократи этот текст примерно на 40-50%, сохрани главную мысль. Верни только сокращённый текст:\n\n" + target;
+      break;
+    case "expand":
+      label = "Расширение";
+      prompt = "Расширь этот текст: добавь деталей, примеров, пояснений. Сохрани стиль. Верни только расширенный текст:\n\n" + target;
+      break;
+    case "fix":
+      label = "Исправление";
+      prompt = "Исправь орфографию, пунктуацию, грамматику. Сохрани стиль и смысл. Верни только исправленный текст:\n\n" + target;
+      break;
+    case "translate":
+      label = "Перевод на английский";
+      prompt = "Переведи на английский язык, сохрани стиль и тон. Верни только перевод:\n\n" + target;
+      break;
+    case "tone_formal":
+      label = "Формальный тон";
+      prompt = "Перепиши в деловом, формальном тоне. Сохрани смысл. Верни только переписанный текст:\n\n" + target;
+      break;
+    case "tone_casual":
+      label = "Неформальный тон";
+      prompt = "Перепиши в дружеском, неформальном тоне. Сохрани смысл. Верни только переписанный текст:\n\n" + target;
+      break;
+    case "summarize":
+      label = "Резюме";
+      prompt = "Кратко перескажи суть текста в 2-4 предложениях. Верни только резюме:\n\n" + target;
+      break;
+    case "title":
+      label = "Заголовок";
+      prompt = "Придумай короткий заголовок для этого текста, до 60 символов. Верни только заголовок:\n\n" + target.slice(0, 3000);
+      break;
+    case "ask":
+      if(!customQuestion || !customQuestion.trim()){ return; }
+      label = "Ответ AI";
+      prompt = "Текст:\n" + target + "\n\nВопрос: " + customQuestion + "\n\nОтветь по существу.";
+      break;
+    default:
+      return;
+  }
+
+  aiBusy = true;
+  showAILoading(label);
+  try {
+    var result = await aiChat(prompt, system);
+    result = result.trim().replace(/^["']|["']$/g, "");
+    if(!result){ showAIError("AI вернул пустой ответ"); return; }
+    showAIResult(actionId, result, wasSelection, label);
+  } catch(e){
+    showAIError(e.message || String(e));
+  } finally {
+    aiBusy = false;
+  }
+}
+
+function openAIPanel(){
+  if(!aiPanelEl){
+    aiPanelEl = document.getElementById("aiPanel");
+    aiPanelEl.querySelectorAll("[data-ai]").forEach(function(b){
+      b.addEventListener("click", function(){ runAIAction(b.dataset.ai); });
+    });
+    document.getElementById("aiClose").addEventListener("click", closeAIPanel);
+    document.getElementById("aiAsk").addEventListener("click", function(){
+      var q = document.getElementById("aiQuestion").value.trim();
+      if(q){ runAIAction("ask", q); document.getElementById("aiQuestion").value = ""; }
+    });
+    document.getElementById("aiQuestion").addEventListener("keydown", function(e){
+      if(e.key === "Enter"){
+        e.preventDefault();
+        var q = e.target.value.trim();
+        if(q){ runAIAction("ask", q); e.target.value = ""; }
+      }
+    });
+  }
+  aiPanelEl.hidden = false;
+}
+function closeAIPanel(){
+  if(aiPanelEl) aiPanelEl.hidden = true;
+}
+
+function initAI(){
+  var aiBtn = document.getElementById("aiBtn");
+  if(aiBtn) aiBtn.addEventListener("click", function(){
+    saveAIRange();
+    openAIPanel();
+  });
+
+  document.addEventListener("keydown", function(e){
+    var ctrl = e.ctrlKey || e.metaKey;
+    if(ctrl && e.shiftKey && e.key.toLowerCase() === "j"){ e.preventDefault(); saveAIRange(); openAIPanel(); }
+  });
+
+  document.addEventListener("keydown", function(e){
+    if(e.key === "Escape" && aiPanelEl && !aiPanelEl.hidden){ closeAIPanel(); }
+  });
 }
 
 /* ============ ИНИЦИАЛИЗАЦИЯ ============ */
@@ -1991,24 +2241,20 @@ function init(){
 
   loadState(); openDoc(activeId); updateStorageInfo(); renderDocList(); initFontSizes(); applyZoom();
 
-  /* --- Сайдбар --- */
   $("#sidebarToggle").addEventListener("click", handleSidebarToggleClick);
   $("#sidebarBackdrop").addEventListener("click", closeSidebarMobile);
   $("#docList").addEventListener("click", function(){ if(isMobileLayout()) closeSidebarMobile(); });
 
-  /* --- Фокус --- */
   $("#focusBtn").addEventListener("click", function(){
     app.classList.toggle("focus");
     toast(app.classList.contains("focus") ? "Режим фокусировки (Esc — выход)" : "Обычный режим");
   });
 
-  /* --- data-cmd --- */
   $$("[data-cmd]").forEach(function(btn){
     btn.addEventListener("mousedown", function(e){ e.preventDefault(); });
     btn.addEventListener("click", function(){ exec(btn.dataset.cmd); });
   });
 
-  /* --- Селекты --- */
   $("#blockSelect").addEventListener("change", function(e){ exec("formatBlock", "<" + e.target.value + ">"); e.target.selectedIndex = 0; });
   $("#fontFamily").addEventListener("change", function(e){ if(e.target.value) exec("fontName", e.target.value); e.target.selectedIndex = 0; });
   $("#fontSize").addEventListener("change", function(e){ if(e.target.value) setFontSize(e.target.value); e.target.selectedIndex = 0; });
@@ -2016,7 +2262,6 @@ function init(){
   $("#hiliteColor").addEventListener("input", function(e){ exec("hiliteColor", e.target.value); });
   $("#clearFormat").addEventListener("click", function(){ exec("removeFormat"); exec("formatBlock", "<p>"); toast("Форматирование очищено"); });
 
-  /* --- Вставки --- */
   $("#addLink").addEventListener("click", addLink);
   $("#addImage").addEventListener("click", function(){
     if(HAS_PYWEBVIEW && window.pywebview && window.pywebview.api && window.pywebview.api.pick_image){
@@ -2031,13 +2276,11 @@ function init(){
   $("#imageInput").addEventListener("change", function(e){ if(e.target.files[0]) insertImageFromFile(e.target.files[0]); e.target.value = ""; });
   $("#addTable").addEventListener("click", insertTable);
 
-  /* --- Файлы --- */
   $("#openFileBtn").addEventListener("click", openFileFromDisk);
   $("#saveFileBtn").addEventListener("click", function(){ saveToFile(false); });
   $("#fileInput").addEventListener("change", function(e){ if(e.target.files[0]) importFile(e.target.files[0]); e.target.value = ""; });
   $("#printBtn").addEventListener("click", doPrint);
 
-  /* --- Меню экспорта --- */
   $("#exportBtn").addEventListener("click", function(e){
     e.stopPropagation();
     if(openMenuEl){ closeAllMenus(); return; }
@@ -2058,7 +2301,6 @@ function init(){
     });
   });
 
-  /* --- Меню тем --- */
   $("#themeBtn").addEventListener("click", function(e){
     e.stopPropagation();
     if(openMenuEl){ closeAllMenus(); return; }
@@ -2079,7 +2321,6 @@ function init(){
     });
   });
 
-  /* --- Меню версии --- */
   $("#versionBtn").addEventListener("click", function(e){
     e.stopPropagation();
     openVersionMenu(e.currentTarget);
@@ -2089,7 +2330,6 @@ function init(){
     openVersionMenu(e.currentTarget);
   });
 
-  /* --- Поиск --- */
   $("#findBtn").addEventListener("click", openFind);
   $("#findClose").addEventListener("click", function(){ $("#findBar").hidden = true; editor.focus(); });
   $("#findInput").addEventListener("input", collectMatches);
@@ -2103,7 +2343,6 @@ function init(){
     if(e.key === "Escape"){ $("#findBar").hidden = true; editor.focus(); }
   });
 
-  /* --- Документы --- */
   $("#newDocBtn").addEventListener("click", function(){ createDoc(); if(isMobileLayout()) closeSidebarMobile(); });
   $("#docSearch").addEventListener("input", renderDocList);
   $("#docList").addEventListener("click", function(e){
@@ -2113,7 +2352,6 @@ function init(){
     if(item && item.dataset.id !== activeId) openDoc(item.dataset.id);
   });
 
-  /* --- Редактор --- */
   editor.addEventListener("input", function(){ updateStats(); scheduleSave(); });
   editor.addEventListener("paste", function(e){
     var html = e.clipboardData.getData("text/html");
@@ -2128,11 +2366,9 @@ function init(){
   titleInput.addEventListener("input", scheduleSave);
   titleInput.addEventListener("blur", saveNow);
 
-  /* --- Зум --- */
   $("#zoomIn").addEventListener("click", function(){ zoom = Math.min(200, zoom + 10); applyZoom(); });
   $("#zoomOut").addEventListener("click", function(){ zoom = Math.max(60, zoom - 10); applyZoom(); });
 
-  /* --- Focus Studio --- */
   $("#focusStudioBtn").addEventListener("click", function(){
     var fs = $("#focusStudio");
     fs.hidden = !fs.hidden;
@@ -2172,7 +2408,6 @@ function init(){
     window.speechSynthesis.onvoiceschanged = function(){ window.speechSynthesis.getVoices(); };
   }
 
-  /* --- Клавиши --- */
   document.addEventListener("keydown", function(e){
     var ctrl = e.ctrlKey || e.metaKey;
     if(e.key === "Escape"){
@@ -2196,7 +2431,6 @@ function init(){
 
   window.addEventListener("beforeunload", saveNow);
 
-  /* --- Автопереключение раскладки --- */
   function handleLayoutChange(e){
     IS_NARROW = e.matches;
     console.log('[Nitpad Pro] Ширина →', window.innerWidth + 'px ·', getVersionLabel());
@@ -2209,7 +2443,6 @@ function init(){
   if(LAYOUT_MQ.addEventListener) LAYOUT_MQ.addEventListener("change", handleLayoutChange);
   else if(LAYOUT_MQ.addListener) LAYOUT_MQ.addListener(handleLayoutChange);
 
-  /* --- Стартовая раскладка --- */
   if(isMobileLayout()){
     closeSidebarMobile();
   } else {
@@ -2217,7 +2450,9 @@ function init(){
     app.classList.remove("no-sidebar");
   }
 
-  /* --- Показ приветственного окна при первом запуске --- */
+  /* --- AI --- */
+  initAI();
+
   if(shouldShowWelcome()){
     showWelcomeModal();
   } else {
