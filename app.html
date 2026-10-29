@@ -4,7 +4,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Nitpad Pro</title>
-<meta name="theme-color" content="#2563eb">
+<meta name="theme-color" content="#4f46e5">
+<meta name="description" content="Nitpad Pro — умный блокнот">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Nitpad">
+<link rel="icon" type="image/png" href="./icon.png">
+<link rel="apple-touch-icon" href="./icon.png">
 <style>
 :root,[data-theme="light"]{--bg:#eef1f5;--panel:#fff;--text:#1a1d21;--muted:#6b7280;--border:#e0e4ea;--accent:#4f46e5;--accent-soft:#eef2ff;--editor-bg:#fff;--code-bg:#f2f4f8;--shadow:0 2px 10px rgba(20,25,40,.07)}
 [data-theme="dark"]{--bg:#111317;--panel:#1a1d22;--text:#e7e9ee;--muted:#98a0ad;--border:#2a2f38;--accent:#8b8bff;--accent-soft:#232838;--editor-bg:#1a1d22;--code-bg:#22262e;--shadow:0 2px 14px rgba(0,0,0,.4)}
@@ -128,8 +135,6 @@ label.color span{font-weight:700;border-bottom:3px solid var(--c,#000);line-heig
 .tts-btns{display:flex;gap:8px;margin-bottom:10px}
 .tts-btns button{flex:1;padding:10px;border-radius:9px;border:1px solid var(--border);background:transparent;cursor:pointer;font-size:13px;font-weight:600}
 .tts-btns button.active{background:var(--accent);color:#fff;border-color:var(--accent)}
-
-/* Music */
 .music-upload-btn{width:100%;padding:10px;border-radius:8px;border:1px dashed var(--accent);background:var(--accent-soft);color:var(--accent);cursor:pointer;font-size:12.5px;font-weight:600;margin-bottom:10px}
 .music-upload-btn:hover{background:var(--accent);color:#fff}
 .music-list{display:flex;flex-direction:column;gap:4px;max-height:200px;overflow-y:auto;margin-bottom:10px}
@@ -147,8 +152,6 @@ label.color span{font-weight:700;border-bottom:3px solid var(--c,#000);line-heig
 .music-player button:hover{filter:brightness(1.1)}
 .music-player button.stop{background:var(--muted)}
 .music-player button.stop:hover{background:#dc2626}
-
-/* Smart break */
 .smart-toggle{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--bg);border-radius:10px;margin-bottom:12px;cursor:pointer;font-size:13px;user-select:none}
 .smart-toggle input{width:16px;height:16px;accent-color:var(--accent);cursor:pointer}
 .smart-stats{font-size:11.5px;color:var(--muted);line-height:1.6;margin-bottom:10px}
@@ -166,7 +169,6 @@ label.color span{font-weight:700;border-bottom:3px solid var(--c,#000);line-heig
 .smart-popup .smart-actions button{flex:1;padding:10px 12px;border-radius:9px;border:1px solid var(--border);background:var(--bg);font-weight:600;cursor:pointer;font-size:13px;color:var(--text)}
 .smart-popup .smart-actions button.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
 .smart-popup .smart-actions button:hover:not(.primary){border-color:var(--accent);color:var(--accent)}
-
 .menu{position:fixed;z-index:60;background:var(--panel);border:1px solid var(--border);border-radius:12px;box-shadow:var(--shadow);padding:6px;min-width:280px;max-width:calc(100vw - 16px)}
 .menu button{display:flex;align-items:center;gap:9px;width:100%;border:none;background:transparent;padding:11px;border-radius:8px;cursor:pointer;font-size:13px;text-align:left;color:var(--text)}
 .menu button:hover{background:var(--accent-soft)}
@@ -191,7 +193,6 @@ label.color span{font-weight:700;border-bottom:3px solid var(--c,#000);line-heig
 .wm-opt-hint{font-size:11.5px;color:var(--muted)}
 .wm-remember{display:inline-flex;align-items:center;gap:8px;font-size:13px;color:var(--muted);cursor:pointer;padding:6px 10px;border-radius:8px;margin-bottom:8px}
 .wm-remember input{width:16px;height:16px;accent-color:var(--accent)}
-
 .assist-panel{position:fixed;top:0;right:0;bottom:0;width:420px;z-index:70;background:var(--panel);border-left:1px solid var(--border);box-shadow:-8px 0 30px rgba(0,0,0,.18);display:flex;flex-direction:column;overflow:hidden}
 .assist-head{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border-bottom:1px solid var(--border);background:linear-gradient(135deg,var(--accent-soft),transparent);flex-shrink:0}
 .assist-head strong{font-size:15px;background:linear-gradient(135deg,var(--accent),#a78bfa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:700}
@@ -235,26 +236,22 @@ label.color span{font-weight:700;border-bottom:3px solid var(--c,#000);line-heig
 .hint-actions button.primary:hover{filter:brightness(1.1);color:#fff}
 .tb.assist-btn{background:linear-gradient(135deg,#4f46e5,#a78bfa);color:#fff !important;border-color:transparent !important;font-weight:700;box-shadow:0 2px 8px rgba(79,70,229,.35)}
 .tb.assist-btn:hover{background:linear-gradient(135deg,#4338ca,#8b5cf6);transform:translateY(-1px);box-shadow:0 4px 12px rgba(79,70,229,.45)}
-
 .convert-bar{padding:10px 12px;border-bottom:1px solid var(--border);display:grid;grid-template-columns:1fr 1fr;gap:6px;flex-shrink:0}
 .convert-bar button{padding:10px 8px;border-radius:8px;border:1px solid var(--accent);background:var(--accent-soft);color:var(--accent);cursor:pointer;font-size:12.5px;font-weight:600}
 .convert-bar button:hover{background:var(--accent);color:#fff}
 .convert-hint{padding:6px 12px;font-size:11px;color:var(--muted);border-bottom:1px solid var(--border);text-align:center;flex-shrink:0;line-height:1.3}
-
 .tools-tab{padding:10px;display:grid;grid-template-columns:1fr 1fr;gap:6px;overflow-y:auto;flex:1;align-content:start}
 .tools-tab button{padding:10px 8px;font-size:12px;border-radius:8px;border:1px solid var(--border);background:transparent;cursor:pointer;color:var(--text);text-align:left;line-height:1.25;display:flex;align-items:center;gap:6px}
 .tools-tab button:hover{border-color:var(--accent);background:var(--accent-soft)}
 .tools-tab .ico{font-size:16px;flex-shrink:0}
 .tools-output{padding:12px;border-top:1px solid var(--border);max-height:200px;overflow-y:auto;font-size:12.5px;line-height:1.5;color:var(--muted);white-space:pre-wrap;word-break:break-word;flex-shrink:0}
 .tools-output.has-result{color:var(--text)}
-
 .img-toolbar{position:absolute;z-index:50;background:var(--panel);border:1px solid var(--border);border-radius:10px;box-shadow:var(--shadow);padding:6px;display:flex;gap:4px;align-items:center;flex-wrap:wrap;max-width:calc(100% - 20px);animation:hintIn .15s ease}
 .img-toolbar button{padding:6px 10px;border-radius:6px;border:1px solid var(--border);background:var(--bg);cursor:pointer;font-size:12px;font-weight:600;color:var(--text);transition:all .15s}
 .img-toolbar button:hover{background:var(--accent-soft);border-color:var(--accent);color:var(--accent)}
 .img-toolbar button.applied{background:var(--accent);color:#fff;border-color:var(--accent)}
 .img-toolbar input{padding:5px 8px;border-radius:6px;border:1px solid var(--border);background:var(--bg);font-size:12px;width:70px;outline:none;color:var(--text)}
 .img-toolbar input:focus{border-color:var(--accent)}
-
 @media print{
   .toolbar,.sidebar,.statusbar,.doc-head,.findbar,.menu,#toast,.focus-studio,.assist-panel,.welcome-modal,.img-toolbar,.smart-popup{display:none!important}
   .app{display:block!important;height:auto!important}
@@ -671,7 +668,7 @@ function loadState(){
   try{ docs = JSON.parse(localStorage.getItem(STORAGE_DOCS)) || []; }catch(e){ docs = []; }
   if(!Array.isArray(docs) || !docs.length){
     var welcome = "<h1>Nitpad Pro — твой умный блокнот 👋</h1>" +
-      "<p>Редактор с <b>Помощником</b>, изменением размера картинок, музыкой и умными перерывами.</p>" +
+      "<p>Редактор с <b>Помощником</b>, музыкой и умными перерывами.</p>" +
       "<h2>💡 Что умеет</h2>" +
       "<ul>" +
       "<li><b>💡 Помощник</b> — раскладка, пробелы, запятые, пунктуация</li>" +
@@ -803,7 +800,6 @@ function renderDocMeta(){
   var d = currentDoc(); if(!d) return;
   $("#docMeta").textContent = "Изменён: " + fmtDate(d.updated);
 }
-
 function updateStats(){
   var text = editor.innerText || "";
   var words = countWords(text);
@@ -1242,7 +1238,6 @@ function doExport(kind){
   toast("💾 " + name + "." + info.ext);
 }
 
-/* ═══ Focus Studio ═══ */
 var pomo = {work:25, rest:5, remaining:25*60, mode:"work", running:false, timer:null};
 function pomoRender(){
   var m = Math.floor(pomo.remaining / 60), s = pomo.remaining % 60;
@@ -1289,7 +1284,6 @@ function pomoReset(){
   pomoRender();
 }
 
-/* ═══ Фоновые звуки ═══ */
 var audioCtx = null, masterGain = null, currentSound = null, soundNodes = [];
 function ensureAudio(){
   if(!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -1350,7 +1344,6 @@ function playSound(kind){
   $$("#soundGrid button").forEach(function(b){ b.classList.toggle("active", b.dataset.sound === kind); });
 }
 
-/* ═══ TTS ═══ */
 function ttsPlay(){
   if(!("speechSynthesis" in window)){ toast("Не поддерживается"); return; }
   window.speechSynthesis.cancel();
@@ -1366,7 +1359,6 @@ function ttsPlay(){
 }
 function ttsStop(){ if("speechSynthesis" in window) window.speechSynthesis.cancel(); $("#ttsPlay").classList.remove("active"); }
 
-/* ═══ Музыка (IndexedDB) ═══ */
 var musicDBPromise = null;
 var musicAudioEl = new Audio();
 musicAudioEl.loop = true;
@@ -1380,16 +1372,13 @@ function openMusicDB(){
     var req = indexedDB.open("nitpad_music", 1);
     req.onupgradeneeded = function(e){
       var db = e.target.result;
-      if (!db.objectStoreNames.contains("tracks")){
-        db.createObjectStore("tracks", { keyPath: "id" });
-      }
+      if (!db.objectStoreNames.contains("tracks")) db.createObjectStore("tracks", { keyPath: "id" });
     };
     req.onsuccess = function(e){ resolve(e.target.result); };
     req.onerror = function(e){ reject(e.target.error); };
   });
   return musicDBPromise;
 }
-
 async function addMusicTrack(file){
   try {
     var db = await openMusicDB();
@@ -1404,11 +1393,10 @@ async function addMusicTrack(file){
     return track;
   } catch(e) {
     console.error("[Nitpad] Music add error:", e);
-    toast("⚠️ Не удалось сохранить трек: " + (e.message || e));
+    toast("⚠️ Не удалось: " + (e.message || e));
     return null;
   }
 }
-
 async function getMusicTracks(){
   try {
     var db = await openMusicDB();
@@ -1418,11 +1406,8 @@ async function getMusicTracks(){
       req.onsuccess = function(){ res(req.result || []); };
       req.onerror = function(e){ rej(e.target.error); };
     });
-  } catch(e) {
-    return [];
-  }
+  } catch(e){ return []; }
 }
-
 async function deleteMusicTrack(id){
   try {
     var db = await openMusicDB();
@@ -1434,7 +1419,6 @@ async function deleteMusicTrack(id){
     });
   } catch(e){ console.error(e); }
 }
-
 async function playMusicById(id){
   try {
     var db = await openMusicDB();
@@ -1444,18 +1428,14 @@ async function playMusicById(id){
       req.onsuccess = function(){ res(req.result); };
       req.onerror = function(e){ rej(e.target.error); };
     });
-    if (!track) { toast("Трек не найден"); return; }
-
+    if (!track){ toast("Трек не найден"); return; }
     ensureAudio();
     if (!musicSourceNode){
       try {
         musicSourceNode = audioCtx.createMediaElementSource(musicAudioEl);
         musicSourceNode.connect(audioCtx.destination);
-      } catch(e) {
-        console.warn("[Nitpad] MediaElementSource уже создан", e);
-      }
+      } catch(e){ console.warn(e); }
     }
-
     if (musicAudioEl.src) URL.revokeObjectURL(musicAudioEl.src);
     musicAudioEl.src = URL.createObjectURL(track.blob);
     musicAudioEl.volume = musicVolumeValue;
@@ -1463,12 +1443,11 @@ async function playMusicById(id){
     currentMusicId = id;
     updateMusicPlayerUI(track.name);
     renderMusicList();
-  } catch(e) {
-    console.error("[Nitpad] Play error:", e);
+  } catch(e){
+    console.error(e);
     toast("⚠️ Ошибка воспроизведения");
   }
 }
-
 function stopMusic(){
   musicAudioEl.pause();
   musicAudioEl.currentTime = 0;
@@ -1476,26 +1455,20 @@ function stopMusic(){
   updateMusicPlayerUI(null);
   renderMusicList();
 }
-
 function toggleMusicPlayPause(){
   if (!currentMusicId) return;
   if (musicAudioEl.paused) musicAudioEl.play();
   else musicAudioEl.pause();
   updateMusicPlayerUI();
 }
-
 function updateMusicPlayerUI(name){
   var player = $("#musicPlayer");
   if (!player) return;
-  if (!currentMusicId){
-    player.hidden = true;
-    return;
-  }
+  if (!currentMusicId){ player.hidden = true; return; }
   player.hidden = false;
-  $("#musicNowPlaying").textContent = name || (currentMusicId ? "—" : "");
+  $("#musicNowPlaying").textContent = name || "—";
   $("#musicPlayPause").textContent = musicAudioEl.paused ? "▶" : "⏸";
 }
-
 async function renderMusicList(){
   var list = $("#musicList");
   if (!list) return;
@@ -1508,20 +1481,13 @@ async function renderMusicList(){
       '<button class="music-track-del" data-del="' + t.id + '" title="Удалить">✕</button>' +
       '</div>';
   }).join("");
-
   list.querySelectorAll(".music-track").forEach(function(el){
     el.onclick = function(e){
       if (e.target.closest(".music-track-del")) return;
       var id = el.dataset.mid;
-      if (id === currentMusicId && !musicAudioEl.paused){
-        musicAudioEl.pause();
-        updateMusicPlayerUI();
-      } else if (id === currentMusicId){
-        musicAudioEl.play();
-        updateMusicPlayerUI();
-      } else {
-        playMusicById(id);
-      }
+      if (id === currentMusicId && !musicAudioEl.paused){ musicAudioEl.pause(); updateMusicPlayerUI(); }
+      else if (id === currentMusicId){ musicAudioEl.play(); updateMusicPlayerUI(); }
+      else playMusicById(id);
     };
   });
   list.querySelectorAll(".music-track-del").forEach(function(btn){
@@ -1537,14 +1503,11 @@ async function renderMusicList(){
   });
 }
 
-/* ═══ Умный перерыв ═══ */
 var smartBreak = {
   enabled: true, workMs: 0, lastActivity: 0, cycles: 0,
-  nextThreshold: 45, timer: null,
-  popupShown: false, warnShown: false,
+  nextThreshold: 45, timer: null, popupShown: false, warnShown: false,
   baseThreshold: 45, minThreshold: 30, breakBase: 5, breakMax: 15
 };
-
 function loadSmartBreak(){
   try{
     var saved = JSON.parse(localStorage.getItem("nitpad.smartBreak") || "{}");
@@ -1556,9 +1519,7 @@ function loadSmartBreak(){
 function saveSmartBreak(){
   try{
     localStorage.setItem("nitpad.smartBreak", JSON.stringify({
-      enabled: smartBreak.enabled,
-      cycles: smartBreak.cycles,
-      nextThreshold: smartBreak.nextThreshold
+      enabled: smartBreak.enabled, cycles: smartBreak.cycles, nextThreshold: smartBreak.nextThreshold
     }));
   }catch(e){}
 }
@@ -1646,7 +1607,6 @@ function postponeSmartBreak(){
   }, 5 * 60 * 1000);
 }
 function hideSmartPopup(){ var p = $("#smartPopup"); if (p) p.classList.remove("show"); }
-
 function startSmartBreak(){
   loadSmartBreak();
   smartSuggest();
@@ -1669,7 +1629,6 @@ function startSmartBreak(){
   updateSmartUI(0, smartBreak.nextThreshold);
 }
 
-/* ═══ Поиск ═══ */
 var matches = [], matchIndex = -1;
 function collectMatches(){
   var q = $("#findInput").value;
@@ -1708,15 +1667,11 @@ function replaceAll(){
   while((n = walker.nextNode())) nodes.push(n);
   var count = 0;
   nodes.forEach(function(node){
-    if(node.nodeValue.indexOf(q) !== -1){
-      node.nodeValue = node.nodeValue.split(q).join(text);
-      count++;
-    }
+    if(node.nodeValue.indexOf(q) !== -1){ node.nodeValue = node.nodeValue.split(q).join(text); count++; }
   });
   if(count){ updateStats(); scheduleSave(); collectMatches(); toast("Заменено: " + count); }
 }
 
-/* ═══ Меню ═══ */
 var openMenuEl = null;
 function closeAllMenus(){ if(openMenuEl){ openMenuEl.remove(); openMenuEl = null; } }
 document.addEventListener("click", closeAllMenus);
@@ -1791,7 +1746,6 @@ function showWelcomeModal(){
   });
 }
 
-/* ═══ Размер картинок ═══ */
 var selectedImageEl = null;
 function openImageToolbar(img){
   if (selectedImageEl && selectedImageEl !== img) selectedImageEl.classList.remove("selected");
@@ -1800,9 +1754,7 @@ function openImageToolbar(img){
   var tb = $("#imgToolbar");
   tb.hidden = false;
   var curWidth = img.style.width || "100%";
-  $$("#imgToolbar [data-size]").forEach(function(b){
-    b.classList.toggle("applied", curWidth === b.dataset.size + "%");
-  });
+  $$("#imgToolbar [data-size]").forEach(function(b){ b.classList.toggle("applied", curWidth === b.dataset.size + "%"); });
   var wrap = $("#pageWrap");
   var imgRect = img.getBoundingClientRect();
   var wrapRect = wrap.getBoundingClientRect();
@@ -1810,14 +1762,12 @@ function openImageToolbar(img){
   if (top < wrap.scrollTop + 8) top = imgRect.bottom - wrapRect.top + wrap.scrollTop + 8;
   var left = imgRect.left - wrapRect.left + wrap.scrollLeft;
   left = Math.max(8, Math.min(left, wrapRect.width - 356));
-  tb.style.top = top + "px";
-  tb.style.left = left + "px";
+  tb.style.top = top + "px"; tb.style.left = left + "px";
 }
 function closeImageToolbar(){
   if (selectedImageEl) selectedImageEl.classList.remove("selected");
   selectedImageEl = null;
-  var tb = $("#imgToolbar");
-  if (tb) tb.hidden = true;
+  var tb = $("#imgToolbar"); if (tb) tb.hidden = true;
 }
 function applyImageSize(value, unit){
   if (!selectedImageEl) return;
@@ -1829,7 +1779,6 @@ function applyImageSize(value, unit){
   setTimeout(function(){ if (selectedImageEl) openImageToolbar(selectedImageEl); }, 50);
 }
 
-/* ═══ Помощник ═══ */
 var LAYOUT_EN_RU = {
   '`':'ё','q':'й','w':'ц','e':'у','r':'к','t':'е','y':'н','u':'г','i':'ш','o':'щ','p':'з',
   '[':'х',']':'ъ','a':'ф','s':'ы','d':'в','f':'а','g':'п','h':'р','j':'о','k':'л','l':'д',
@@ -1910,7 +1859,7 @@ function scanWrongLayout(text){
   var ex = findings.slice(0, 4).map(function(f){ return '«' + f.orig + '» → «' + f.fixed + '»'; }).join(', ');
   currentHints.push({
     severity: strong.length ? 'warning' : 'info', icon: '🔤', title: 'Похоже на ошибку раскладки',
-    desc: 'Найдено: ' + findings.length + '. ' + ex + (findings.length > 4 ? ' и др.' : ''),
+    desc: 'Найдено: ' + findings.length + '. ' + ex,
     count: findings.length, searchText: findings[0].orig,
     applyFix: function(){
       findings.forEach(function(f){
@@ -1943,8 +1892,7 @@ function scanSpaceBeforePunct(text){
   var m = text.match(/ +([,;:.!?)\]»])/g);
   if (m && m.length) currentHints.push({
     severity: 'warning', icon: '✏️', title: 'Лишний пробел перед знаком',
-    desc: 'Найдено: ' + m.length + ' — «слово ,» → «слово,»',
-    count: m.length, searchText: null,
+    desc: 'Найдено: ' + m.length, count: m.length, searchText: null,
     applyFix: function(){ replaceInEditor(/ +([,;:.!?)\]»])/g, '$1'); }
   });
 }
@@ -2175,7 +2123,6 @@ function runTool(name){
   }
 }
 
-/* ═══ Init ═══ */
 var assistPanelEl = null, autoScanTimer = null;
 function onEditorChange(){
   updateStats(); scheduleSave();
@@ -2308,7 +2255,6 @@ function init(){
   $("#ttsStop").onclick = ttsStop;
   $("#ttsRate").oninput = function(e){ $("#ttsRateVal").textContent = parseFloat(e.target.value).toFixed(1) + "×"; };
 
-  /* Music */
   $("#musicUploadBtn").onclick = function(){ $("#musicInput").click(); };
   $("#musicInput").onchange = async function(e){
     var file = e.target.files[0];
@@ -2319,10 +2265,7 @@ function init(){
     }
     toast("⏳ Загружаю: " + file.name);
     var track = await addMusicTrack(file);
-    if (track){
-      toast("✅ Трек добавлен: " + track.name);
-      await renderMusicList();
-    }
+    if (track){ toast("✅ Трек добавлен: " + track.name); await renderMusicList(); }
   };
   $("#musicPlayPause").onclick = toggleMusicPlayPause;
   $("#musicStop").onclick = stopMusic;
@@ -2365,7 +2308,6 @@ function init(){
 
   $$("#toolsTab button").forEach(function(b){ b.onclick = function(){ runTool(b.dataset.tool); }; });
 
-  /* Image toolbar */
   editor.addEventListener("click", function(e){
     if (e.target.tagName === "IMG"){ e.preventDefault(); openImageToolbar(e.target); }
   });
@@ -2432,6 +2374,26 @@ function init(){
   updateStats();
   updateFileBadge();
   updateVersionBadge();
+
+  /* ═══ PWA — только на http(s) ═══ */
+  if (location.protocol === "http:" || location.protocol === "https:"){
+    var link = document.createElement("link");
+    link.rel = "manifest";
+    link.href = "./manifest.json";
+    document.head.appendChild(link);
+
+    if ("serviceWorker" in navigator){
+      window.addEventListener("load", function(){
+        navigator.serviceWorker.register("./sw.js").then(function(){
+          console.log("[Nitpad] ✅ SW зарегистрирован");
+        }).catch(function(err){
+          console.warn("[Nitpad] SW не зарегистрирован:", err);
+        });
+      });
+    }
+  } else {
+    console.log("[Nitpad] file:// — PWA пропущен (это норма)");
+  }
 }
 
 document.addEventListener("DOMContentLoaded", init);
